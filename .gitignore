@@ -22,3 +22,6 @@ Desktop.ini
 
 # Debug
 *.log
+
+# Landing page (separate project)
+lp/

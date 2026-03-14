@@ -83,10 +83,19 @@
   // ==================== CSS INJECTION ====================
 
   let injectedStyle = null;
-  let settings = { masterEnabled: true, categories: {} };
+  let settings = { masterEnabled: true, categories: {}, whitelist: [] };
+
+  // Check if current domain is whitelisted
+  function isWhitelisted() {
+    const whitelist = settings.whitelist || [];
+    if (whitelist.length === 0) return false;
+    const hostname = window.location.hostname;
+    return whitelist.some(domain => hostname.includes(domain));
+  }
 
   function getActiveSelectors() {
     if (!settings.masterEnabled) return [];
+    if (isWhitelisted()) return [];
 
     const selectors = [];
     const categories = settings.categories || {};
@@ -199,6 +208,9 @@
   }
 
   function handleMutations(mutations) {
+    // Skip if whitelisted
+    if (isWhitelisted()) return;
+
     for (const mutation of mutations) {
       // Check added nodes
       for (const node of mutation.addedNodes) {
@@ -240,6 +252,11 @@
     const originalCreateElement = document.createElement;
     document.createElement = function(tagName, options) {
       const element = originalCreateElement.call(this, tagName, options);
+
+      // Skip if whitelisted
+      if (isWhitelisted()) {
+        return element;
+      }
 
       if (tagName.toLowerCase() === 'script') {
         // Intercept src setting

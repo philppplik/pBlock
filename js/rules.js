@@ -277,18 +277,22 @@ const RuleManager = {
         if (subConfig && !subConfig.enabled) continue;
 
         for (const rule of subRules) {
-          // Check whitelist
-          const domain = rule.urlFilter.replace('||', '').replace('^', '');
-          if (whitelist.some(w => domain.includes(w))) continue;
+          // Build condition with whitelist exclusion
+          const condition = {
+            urlFilter: rule.urlFilter,
+            resourceTypes: RESOURCE_TYPES
+          };
+
+          // Exclude whitelisted domains - NOTHING gets blocked on these sites
+          if (whitelist.length > 0) {
+            condition.excludedInitiatorDomains = whitelist;
+          }
 
           rules.push({
             id: rule.id,
             priority: 1,
             action: { type: 'block' },
-            condition: {
-              urlFilter: rule.urlFilter,
-              resourceTypes: RESOURCE_TYPES
-            }
+            condition
           });
         }
       }
@@ -296,14 +300,20 @@ const RuleManager = {
 
     // Custom rules (IDs start at 10000)
     customRules.forEach((rule, index) => {
+      const condition = {
+        urlFilter: rule.urlFilter,
+        resourceTypes: RESOURCE_TYPES
+      };
+
+      if (whitelist.length > 0) {
+        condition.excludedInitiatorDomains = whitelist;
+      }
+
       rules.push({
         id: 10000 + index,
         priority: 1,
         action: { type: 'block' },
-        condition: {
-          urlFilter: rule.urlFilter,
-          resourceTypes: RESOURCE_TYPES
-        }
+        condition
       });
     });
 

@@ -162,6 +162,23 @@ const CosmeticFilter = {
 
   // Apply cosmetic filters to a tab
   async applyToTab(tabId, settings) {
+    // Check whitelist - skip cosmetic filtering for whitelisted domains
+    const whitelist = settings.whitelist || [];
+    if (whitelist.length > 0) {
+      try {
+        const tab = await chrome.tabs.get(tabId);
+        if (tab.url) {
+          const hostname = new URL(tab.url).hostname;
+          if (whitelist.some(domain => hostname.includes(domain))) {
+            // Whitelisted - skip cosmetic filtering
+            return '';
+          }
+        }
+      } catch (e) {
+        // If we can't get tab info, continue normally
+      }
+    }
+
     const rules = await this.getActiveRules(settings);
     const css = this.generateCSS(rules);
     if (css) {

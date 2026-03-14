@@ -172,6 +172,7 @@ async function handleMessage(message, sender, sendResponse) {
         masterEnabled: settings.masterEnabled,
         filterLevel: settings.filterLevel,
         categories: settings.categories,
+        whitelist: settings.whitelist || [],
         statistics: stats
       });
       break;
@@ -456,7 +457,8 @@ async function applyRules() {
             type: 'updateSettings',
             settings: {
               masterEnabled: settings.masterEnabled,
-              categories: settings.categories
+              categories: settings.categories,
+              whitelist: settings.whitelist || []
             }
           }).catch(() => {});
         } catch (e) {
