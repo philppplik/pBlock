@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pBlock - Willkommen</title>
+  <link rel="stylesheet" href="css/common.css">
+  <script src="js/vendor/iconify-icon.min.js"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-xl);
+    }
+
+    .wizard-container {
+      width: 600px;
+      max-width: 100%;
+    }
+
+    .wizard-header {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .wizard-header .logo {
+      font-size: 64px;
+      margin-bottom: var(--space-lg);
+    }
+
+    .wizard-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .wizard-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .wizard-step {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .wizard-step.active {
+      display: block;
+    }
+
+    .step-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      margin-bottom: var(--space-xl);
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+    }
+
+    .step-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: var(--space-xl);
+    }
+
+    .level-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .level-option {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .level-option:hover {
+      border-color: var(--bg-hover);
+    }
+
+    .level-option.selected {
+      border-color: var(--accent-primary);
+      background: var(--accent-dim);
+    }
+
+    .level-option input {
+      display: none;
+    }
+
+    .level-option .icon {
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .level-option .info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: var(--space-xs);
+    }
+
+    .level-option .info p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .wizard-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wizard-progress {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .progress-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      transition: all var(--transition-fast);
+    }
+
+    .progress-dot.active {
+      background: var(--accent-primary);
+    }
+
+    .progress-dot.done {
+      background: var(--success);
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+    }
+
+    .feature-item .icon {
+      font-size: 24px;
+      width: 32px;
+      text-align: center;
+    }
+
+    .feature-item .text {
+      font-size: 13px;
+    }
+
+    .feature-item .text strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .feature-item .text span {
+      color: var(--text-secondary);
+    }
+
+    .finish-animation {
+      text-align: center;
+      padding: var(--space-2xl);
+    }
+
+    .finish-animation .check {
+      font-size: 72px;
+      margin-bottom: var(--space-lg);
+      animation: scaleIn 0.5s ease;
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .finish-animation h2 {
+      font-size: 24px;
+      margin-bottom: var(--space-md);
+    }
+
+    .finish-animation p {
+      color: var(--text-secondary);
+      margin-bottom: var(--space-xl);
+    }
+  </style>
+</head>
+<body>
+  <div class="wizard-container">
+    <div class="wizard-header">
+      <div class="logo"><img src="images/pBlock-icon+schriftLogo.png" height="47"></div>
+      <h1><strong style="font-size: 0px; line-height: 0px;"></strong><h1>
+      <p>Willkommen! Lass uns in 30 Sekunden einrichten.</p>
+    </div>
+
+    <!-- Step 1: Welcome -->
+    <div class="wizard-step active" id="step-1">
+      <div class="step-content">
+        <h2 class="step-title">Was dieser Blocker kann</h2>
+        <div class="features-list">
+          <div class="feature-item">
+            <span class="icon"><iconify-icon icon="mdi:shield-check" width="24" height="24"></iconify-icon></span>
+            <div class="text">
+              <strong>Werbung blockieren</strong>
+              <span>Google Ads, Banner, Popups, Video-Werbung</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="icon"><iconify-icon icon="mdi:chart-bar" width="24" height="24"></iconify-icon></span>
+            <div class="text">
+              <strong>Tracker stoppen</strong>
+              <span>Google Analytics, Hotjar, Facebook Pixel und mehr</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="icon"><iconify-icon icon="mdi:cellphone" width="24" height="24"></iconify-icon></span>
+            <div class="text">
+              <strong>Social Media Tracking</strong>
+              <span>Twitter, LinkedIn, TikTok, Pinterest Tracker</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="icon"><iconify-icon icon="mdi:bell-off-outline" width="24" height="24"></iconify-icon></span>
+            <div class="text">
+              <strong>Nerviges entfernen</strong>
+              <span>Content-Empfehlungen und Ad-Messung</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Choose Level -->
+    <div class="wizard-step" id="step-2">
+      <div class="step-content">
+        <h2 class="step-title">Wähle dein Schutzniveau</h2>
+        <p class="step-desc">
+          Du kannst das jederzeit in den Einstellungen ändern.
+        </p>
+        <div class="level-options">
+          <label class="level-option selected" data-level="simple">
+            <input type="radio" name="level" value="simple" checked>
+            <span class="icon"><iconify-icon icon="hugeicons:user-02" style="color: #3fb950;" width="32" height="32"></iconify-icon></span>
+            <div class="info">
+              <h3>Laie (Empfohlen)</h3>
+              <p>Einfacher Schieberegler von Aus bis Maximum. Wähle dein Schutzniveau mit einem Klick.</p>
+            </div>
+          </label>
+          <label class="level-option" data-level="expert">
+            <input type="radio" name="level" value="expert">
+            <span class="icon"><iconify-icon icon="mdi:code-braces" style="color: #f85149;" width="32" height="32"></iconify-icon></span>
+            <div class="info">
+              <h3>Experte</h3>
+              <p>Volle Kontrolle über jede Kategorie und Unterkategorie. Eigene Regeln, Filterlisten, Whitelist.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Pin Extension -->
+    <div class="wizard-step" id="step-3">
+      <div class="step-content">
+        <h2 class="step-title">Extension pinnen</h2>
+        <p class="step-desc">
+          Damit du pBlock jederzeit schnell erreichen kannst, pin die Extension an deine Toolbar.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Step visual guide -->
+          <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 32px; height: 32px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 14px;">1</div>
+            <div style="font-size: 13px; color: var(--text-secondary);">
+              <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">Puzzle-Icon klicken</strong>
+              Klicke auf das <iconify-icon icon="mdi:puzzle-outline" style="vertical-align: middle;"></iconify-icon> Puzzle-Icon rechts neben der Adressleiste.
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 32px; height: 32px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 14px;">2</div>
+            <div style="font-size: 13px; color: var(--text-secondary);">
+              <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">pBlock anheften</strong>
+              Suche nach <strong>pBlock</strong> in der Liste und klicke auf das <iconify-icon icon="mdi:pin-outline" style="vertical-align: middle;"></iconify-icon> Pin-Symbol daneben.
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: flex-start; gap: 16px; padding: 16px; background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="flex-shrink: 0; width: 32px; height: 32px; background: var(--accent-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 14px;">3</div>
+            <div style="font-size: 13px; color: var(--text-secondary);">
+              <strong style="color: var(--text-primary); display: block; margin-bottom: 4px;">Fertig!</strong>
+              pBlock <iconify-icon icon="mdi:shield-check" style="vertical-align: middle; color: var(--accent-primary);"></iconify-icon> ist jetzt immer sichtbar und direkt erreichbar.
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 12px 16px; background: var(--accent-dim); border-radius: var(--radius-md); border-left: 3px solid var(--accent-primary);">
+          <p style="font-size: 12px; color: var(--text-secondary); margin: 0;">
+            <iconify-icon icon="mdi:lightbulb-outline" style="vertical-align: middle; color: var(--accent-primary);"></iconify-icon>
+            <strong style="color: var(--text-primary);">Tipp:</strong> Gepinnte Extensions haben eine bessere Sichtbarkeit und schnellere Interaktion.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Finish -->
+    <div class="wizard-step" id="step-4">
+      <div class="step-content">
+        <div class="finish-animation">
+          <div class="check"><iconify-icon icon="mdi:check-circle" width="72" height="72" style="color: #3fb950;"></iconify-icon></div>
+          <h2>Bereit!</h2>
+          <p>Der Ad Blocker ist jetzt aktiv und schützt dich.</p>
+          <p style="font-size: 13px; color: var(--text-muted);">
+            Klicke auf das pBlock Icon in der Toolbar um den Status zu sehen<br>
+            oder öffne die Einstellungen für erweiterte Optionen.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="wizard-nav">
+      <div class="wizard-progress">
+        <div class="progress-dot active" data-step="1"></div>
+        <div class="progress-dot" data-step="2"></div>
+        <div class="progress-dot" data-step="3"></div>
+        <div class="progress-dot" data-step="4"></div>
+      </div>
+      <div>
+        <button class="btn" id="wizard-prev" style="display:none;">Zurück</button>
+        <button class="btn btn-primary" id="wizard-next">Weiter</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="wizard.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# pBlock - Git Ignore
+
+# Claude Code
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Chrome Extension Build (optional)
+*.pem
+*.crx
+*.zip
+
+# Debug
+*.log
