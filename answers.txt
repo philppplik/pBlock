@@ -1,0 +1,141 @@
+================================================================================
+pBlock - Chrome Web Store Einreichung - Antworten
+================================================================================
+
+================================================================================
+ALLEINIGER ZWECK
+================================================================================
+
+Beschreibung des alleinigen Zwecks:
+pBlock ist ein Werbeblocker, der Anzeigen, Tracker und Social-Media-Elemente
+auf Webseiten blockiert. Die Erweiterung bietet ein 3-stufiges Filter-System
+(Laie/Experte), einen visuellen Element-Picker zum manuellen Blockieren von
+Seitenelementen und Cosmetic-Filter zum Ausblenden von Werbecontainern. Alle
+Verarbeitung erfolgt lokal; es werden keine Nutzerdaten erhoben oder übertragen.
+
+================================================================================
+GRÜNDE FÜR DIE BERECHTIGUNGEN
+================================================================================
+
+Begründung für storage:
+Lokale Speicherung von Benutzereinstellungen (Filterlevel, aktivierte
+Kategorien, Whitelist, Statistiken). Keine Synchronisation oder externe
+Übertragung. Erforderlich, damit die Konfiguration zwischen Browser-Sitzungen
+erhalten bleibt.
+
+Begründung für declarativeNetRequest:
+Kernfunktion des Ad-Blockers. Ermöglicht das Blockieren von Netzwerkanfragen
+zu Werbe- und Tracking-Domainlisten auf Manifest-V3-konforme Weise. Ohne diese
+Berechtigung kann die Erweiterung keine Anfragen blockieren.
+
+Begründung für declarativeNetRequestWithHostAccess:
+Erforderlich, um Filterregeln auch auf Seiten anzuwenden, die der Nutzer
+besucht. Ermöglicht die korrekte Zuordnung blockierter Anfragen zu den
+entsprechenden Filterkategorien und das Tracking der Statistiken pro Domain.
+
+Begründung für activeTab:
+Wird für den Element-Picker verwendet, mit dem Nutzer manuell bestimmte
+Elemente auf der aktuellen Seite zum Blockieren auswählen können. Zugriff
+ausschließlich auf den vom Nutzer aktiv geöffneten Tab.
+
+Begründung für scripting:
+Erforderlich zum Injizieren von Cosmetic-Filtern (CSS-Hide-Regeln) in
+Webseiten, um Werbecontainer und Tracker-Banner auszublenden, die nicht
+durch Netzwerkblockierung entfernt werden können.
+
+Begründung für contextMenus:
+Bietet ein Rechtsklick-Kontextmenü mit den Optionen "Element blockieren",
+"Diese Seite whitelisten" und "Einstellungen öffnen" für schnellen Zugriff
+ohne Popup öffnen zu müssen.
+
+Begründung für notifications:
+Zeigt Benachrichtigungen bei Meilensteinen (z.B. "1000 Anfragen blockiert")
+und beim Hinzufügen einer Domain zur Whitelist an. Dient der Transparenz
+und dem Nutzerfeedback.
+
+Begründung für Hostberechtigung (<all_urls>):
+Der Ad-Blocker muss auf allen Webseiten funktionieren, um Werbung und Tracker
+global zu blockieren. Es gibt keine Einschränkung auf bestimmte Domains, da
+Werbung auf jeder beliebigen Seite erscheinen kann. Keine Daten werden an
+externe Server gesendet; alle Verarbeitung erfolgt lokal.
+
+================================================================================
+REMOTE CODE
+================================================================================
+
+Nutzt du remote code?
+Nein, ich verwende "Remote Code" nicht
+
+Begründung:
+Alle JavaScript-Dateien, CSS-Stylesheets, Icons (Iconify) und Filterlisten
+sind lokal im Erweiterungspaket enthalten. Es werden keine externen Skripte
+via CDN, eval(), <script src="https://..."> oder dynamische Module geladen.
+Die Erweiterung macht keinerlei ausgehende Netzwerkanfragen.
+
+================================================================================
+DATENNUTZUNG
+================================================================================
+
+Personenidentifizierbare Informationen:
+Ich erfasse keine personenidentifizierbaren Informationen
+
+Gesundheitsinformationen:
+Ich erfasse keine Gesundheitsinformationen
+
+Finanzdaten und Zahlungsinformationen:
+Ich erfasse keine Finanzdaten und Zahlungsinformationen
+
+Authentifizierungsdaten:
+Ich erfasse keine Authentifizierungsdaten
+
+Persönliche Kommunikation:
+Ich erfasse keine persönliche Kommunikation
+
+Ort:
+Ich erfasse keine Standortdaten
+
+Webprotokoll:
+Ich erfasse keine Webprotokolldaten
+
+Nutzeraktivität:
+Ich erfasse keine Nutzeraktivitätsdaten
+
+Websitecontent:
+Ich erfasse keine Webseiteninhalte
+
+================================================================================
+BESTÄTIGUNGEN
+================================================================================
+
+Ich bestätige, dass die folgenden Offenlegungen richtig sind:
+
+[X] Ich verkaufe oder übertrage keine Nutzerdaten an Dritte, außer in den
+    genehmigten Anwendungsfällen.
+
+[X] Nutzerdaten werden nicht aus Gründen, die nichts mit dem alleinigen Zweck
+    des Artikels zu tun haben, verwendet oder übertragen.
+
+[X] Nutzerdaten werden nicht zur Ermittlung der Kreditwürdigkeit oder für
+    Darlehenszwecke verwendet oder übertragen.
+
+================================================================================
+DATENSCHUTZRICHTLINIE URL (für Chrome Web Store)
+================================================================================
+
+Privacy Policy URL:
+https://pblock.philipp-paulik.de/privacy
+
+================================================================================
+ZUSAMMENFASSUNG
+================================================================================
+
+pBlock verarbeitet alle Daten ausschließlich lokal auf dem Gerät des Nutzers.
+Es werden keine personenbezogenen Daten erhoben, keine Daten an externe
+Server gesendet und keine Remote-Ressourcen geladen. Die Erweiterung dient
+einzig dem Zweck, unerwünschte Webinhalte zu blockieren und dem Nutzer
+volle Kontrolle über seinen Browsing-Schutz zu geben.
+
+Website: https://pblock.philipp-paulik.de
+Datenschutz: https://pblock.philipp-paulik.de/privacy
+Impressum: https://pblock.philipp-paulik.de/impressum
+GitHub: https://github.com/philppplik/pBlock

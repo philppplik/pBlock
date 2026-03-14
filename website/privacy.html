@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pBlock - Datenschutzerklärung</title>
+  <meta name="description" content="Datenschutzerklärung für pBlock - der Open Source Ad Blocker für Chrome. Keine Datensammlung, 100% lokal.">
+  <style>
+    :root {
+      --bg-primary: #1C1C1C;
+      --bg-secondary: #161616;
+      --bg-tertiary: #1f1f1f;
+      --border-color: #2a2a2a;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --accent-primary: #E54748;
+      --accent-gradient: linear-gradient(135deg, #EE767C 0%, #E54748 50%, #9F0132 100%);
+      --accent-gradient-soft: linear-gradient(135deg, rgba(238, 118, 124, 0.15) 0%, rgba(159, 1, 50, 0.15) 100%);
+      --success: #3fb950;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .logo-text { font-size: 18px; font-weight: 600; }
+
+    .nav { display: flex; gap: 24px; }
+
+    .nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.15s;
+    }
+
+    .nav a:hover { color: var(--accent-primary); }
+    .nav a.active { color: var(--accent-primary); }
+
+    /* Main */
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .page-header p { color: var(--text-secondary); }
+
+    /* Sections */
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .section p, .section li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .section ul { margin: 8px 0 16px 24px; }
+    .section li { margin-bottom: 4px; }
+
+    /* Highlight */
+    .highlight {
+      background: var(--accent-gradient-soft);
+      border: 1px solid var(--accent-primary);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    td { color: var(--text-secondary); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-no {
+      background: rgba(229, 71, 72, 0.1);
+      color: var(--accent-primary);
+    }
+
+    .badge-yes {
+      background: rgba(63, 185, 80, 0.1);
+      color: var(--success);
+    }
+
+    code {
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    /* Contact */
+    .contact {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+
+    .contact-info { font-size: 14px; color: var(--text-secondary); }
+    .contact-info strong { color: var(--text-primary); display: block; margin-bottom: 2px; }
+
+    a { color: var(--accent-primary); }
+    a:hover { text-decoration: underline; }
+
+    /* Footer */
+    .footer {
+      max-width: 800px;
+      margin: 40px auto 0;
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .header-inner { flex-direction: column; gap: 16px; }
+      .nav { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="https://pblock.philipp-paulik.de" class="logo">
+        <div class="logo-icon">pB</div>
+        <span class="logo-text">pBlock</span>
+      </a>
+      <nav class="nav">
+        <a href="https://pblock.philipp-paulik.de">Home</a>
+        <a href="https://pblock.philipp-paulik.de/privacy" class="active">Datenschutz</a>
+        <a href="https://pblock.philipp-paulik.de/impressum">Impressum</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <h1>Datenschutzerklärung</h1>
+      <p>Letzte Aktualisierung: 14. März 2026</p>
+    </div>
+
+    <div class="highlight">
+      pBlock sammelt keine personenbezogenen Daten. Alle Verarbeitung erfolgt lokal auf deinem Gerät.
+    </div>
+
+    <div class="section">
+      <h2>1. Verantwortlicher</h2>
+      <p>Verantwortlich für die Datenverarbeitung im Sinne der Datenschutz-Grundverordnung (DSGVO):</p>
+      <div class="contact">
+        <div class="contact-info">
+          <strong>Philipp Paulik</strong>
+          E-Mail: <a href="mailto:philipp.l.paulik@gmail.com?subject=pBlock%20Datenschutz">philipp.l.paulik@gmail.com</a><br>
+          Website: <a href="https://philipp-paulik.de">philipp-paulik.de</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>2. Übersicht der Datenverarbeitung</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Art der Daten</th>
+            <th>Erhoben?</th>
+            <th>Verwendung</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Personenbezogene Daten (Name, E-Mail, etc.)</td>
+            <td><span class="badge badge-no">Nein</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>IP-Adressen</td>
+            <td><span class="badge badge-no">Nein</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Browsing-Verlauf</td>
+            <td><span class="badge badge-no">Nein</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Blockier-Statistiken (lokal)</td>
+            <td><span class="badge badge-yes">Lokal</span></td>
+            <td>Anzeige im Popup</td>
+          </tr>
+          <tr>
+            <td>Einstellungen (lokal)</td>
+            <td><span class="badge badge-yes">Lokal</span></td>
+            <td>Filterkonfiguration</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>3. Lokale Datenspeicherung</h2>
+      <p>pBlock nutzt ausschließlich die <strong>Chrome Storage API</strong>, um Daten lokal auf deinem Gerät zu speichern. Es werden keine Daten an externe Server gesendet.</p>
+      <ul>
+        <li><strong>Filtereinstellungen:</strong> Welche Kategorien und Filterlisten aktiviert sind</li>
+        <li><strong>Whitelist:</strong> Domains, die vom Blockieren ausgenommen sind</li>
+        <li><strong>Blockier-Statistiken:</strong> Anzahl blockierter Anfragen (heute, Woche, gesamt)</li>
+        <li><strong>Benutzerdefinierte Regeln:</strong> Vom Nutzer erstellte Blockierregeln</li>
+        <li><strong>Slider-Wert:</strong> Das gewählte Schutzniveau (0–100)</li>
+      </ul>
+      <p>Diese Daten werden <strong>nicht synchronisiert</strong> und verlassen niemals dein Gerät.</p>
+    </div>
+
+    <div class="section">
+      <h2>4. Berechtigungen</h2>
+      <p>Die Erweiterung verwendet folgende Chrome-Berechtigungen:</p>
+      <table>
+        <thead>
+          <tr><th>Berechtigung</th><th>Zweck</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>storage</code></td><td>Lokale Speicherung von Einstellungen und Statistiken</td></tr>
+          <tr><td><code>declarativeNetRequest</code></td><td>Blockierung von Netzwerkanfragen (Werbung, Tracker)</td></tr>
+          <tr><td><code>activeTab</code></td><td>Zugriff auf den aktiven Tab für den Element-Picker</td></tr>
+          <tr><td><code>scripting</code></td><td>Injektion von Cosmetic-Filtern in Webseiten</td></tr>
+          <tr><td><code>contextMenus</code></td><td>Rechtsklick-Menü zum schnellen Blockieren</td></tr>
+          <tr><td><code>notifications</code></td><td>Meilenstein-Benachrichtigungen</td></tr>
+          <tr><td><code>&lt;all_urls&gt;</code></td><td>Ermöglicht das Blockieren auf allen Webseiten</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>5. Was wir NICHT tun</h2>
+      <ul>
+        <li>Wir sammeln <strong>keine personenbezogenen Daten</strong></li>
+        <li>Wir tracken <strong>keinen Browsing-Verlauf</strong></li>
+        <li>Wir senden <strong>keine Daten an externe Server</strong></li>
+        <li>Wir verwenden <strong>keine Analytics-Tools</strong></li>
+        <li>Wir verkaufen oder teilen <strong>keine Nutzerdaten</strong></li>
+        <li>Wir laden <strong>keinen Remote-Code</strong> (alle Ressourcen sind im Paket enthalten)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>6. Netzwerkanfragen der Erweiterung</h2>
+      <p>pBlock macht <strong>keine ausgehenden Netzwerkanfragen</strong>. Alle Filterlisten und Ressourcen sind lokal im Erweiterungspaket enthalten. Es gibt keine Verbindung zu externen Servern.</p>
+    </div>
+
+    <div class="section">
+      <h2>7. Rechtsgrundlage (DSGVO)</h2>
+      <p>Da pBlock keine personenbezogenen Daten erhebt oder verarbeitet, findet die DSGVO auf die Funktionsweise der Erweiterung keine Anwendung. Die lokale Speicherung von Einstellungen erfolgt ausschließlich auf dem Gerät des Nutzers und unterliegt keiner Datenübermittlung.</p>
+    </div>
+
+    <div class="section">
+      <h2>8. Deine Rechte</h2>
+      <p>Da wir keine personenbezogenen Daten sammeln, gibt es keine Daten, die gelöscht, berichtigt oder exportiert werden müssten. Du kannst jederzeit:</p>
+      <ul>
+        <li>Alle lokalen Daten über die Einstellungen zurücksetzen</li>
+        <li>Die Erweiterung deinstallieren (entfernt alle lokalen Daten)</li>
+        <li>Über die Whitelist bestimmte Domains vom Blockieren ausschließen</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>9. Änderungen dieser Datenschutzerklärung</h2>
+      <p>Wir können diese Datenschutzerklärung von Zeit zu Zeit aktualisieren. Änderungen werden auf dieser Seite veröffentlicht. Die "Letzte Aktualisierung"-Angabe am Seitenanfang zeigt das Datum der letzten Änderung an.</p>
+    </div>
+
+    <div class="section">
+      <h2>10. Kontakt</h2>
+      <p>Bei Fragen zum Datenschutz oder zur Erweiterung kannst du uns kontaktieren:</p>
+      <div class="contact">
+        <div class="contact-info">
+          <strong>E-Mail</strong>
+          <a href="mailto:philipp.l.paulik@gmail.com?subject=pBlock%20Datenschutz">philipp.l.paulik@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>pBlock — Open Source Ad Blocker | <a href="https://github.com/philppplik/pBlock">GitHub</a></p>
+  </footer>
+</body>
+</html>

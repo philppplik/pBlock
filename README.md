@@ -86,7 +86,13 @@ pBlock collects **zero user data**. All processing happens locally on your devic
 - No remote code loaded
 - All filter lists bundled locally
 
-Read the full [Privacy Policy](privacy.html).
+Read the full [Privacy Policy](https://pblock.philipp-paulik.de/privacy).
+
+## Links
+
+- **Website:** [pblock.philipp-paulik.de](https://pblock.philipp-paulik.de)
+- **Privacy Policy:** [pblock.philipp-paulik.de/privacy](https://pblock.philipp-paulik.de/privacy)
+- **Imprint:** [pblock.philipp-paulik.de/impressum](https://pblock.philipp-paulik.de/impressum)
 
 ## Tech Stack
 

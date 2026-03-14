@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pBlock - Impressum</title>
+  <meta name="description" content="Impressum für pBlock - der Open Source Ad Blocker für Chrome.">
+  <style>
+    :root {
+      --bg-primary: #1C1C1C;
+      --bg-secondary: #161616;
+      --bg-tertiary: #1f1f1f;
+      --border-color: #2a2a2a;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --accent-primary: #E54748;
+      --accent-gradient: linear-gradient(135deg, #EE767C 0%, #E54748 50%, #9F0132 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 0;
+    }
+
+    .header-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--accent-gradient);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .logo-text { font-size: 18px; font-weight: 600; }
+
+    .nav { display: flex; gap: 24px; }
+
+    .nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.15s;
+    }
+
+    .nav a:hover { color: var(--accent-primary); }
+    .nav a.active { color: var(--accent-primary); }
+
+    .main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .page-header p { color: var(--text-secondary); }
+
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    .section p, .section li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .section ul { margin: 8px 0 16px 24px; }
+    .section li { margin-bottom: 4px; }
+
+    a { color: var(--accent-primary); }
+    a:hover { text-decoration: underline; }
+
+    .footer {
+      max-width: 800px;
+      margin: 40px auto 0;
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .header-inner { flex-direction: column; gap: 16px; }
+      .nav { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="https://pblock.philipp-paulik.de" class="logo">
+        <div class="logo-icon">pB</div>
+        <span class="logo-text">pBlock</span>
+      </a>
+      <nav class="nav">
+        <a href="https://pblock.philipp-paulik.de">Home</a>
+        <a href="https://pblock.philipp-paulik.de/privacy">Datenschutz</a>
+        <a href="https://pblock.philipp-paulik.de/impressum" class="active">Impressum</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <h1>Impressum</h1>
+      <p>Angaben gemäß § 5 TMG</p>
+    </div>
+
+    <div class="section">
+      <h2>Verantwortlich für den Inhalt</h2>
+      <p>
+        <strong>Philipp Paulik</strong><br>
+        E-Mail: <a href="mailto:philipp.l.paulik@gmail.com">philipp.l.paulik@gmail.com</a><br>
+        Website: <a href="https://philipp-paulik.de">philipp-paulik.de</a>
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Haftungsausschluss</h2>
+
+      <h3 style="font-size: 15px; margin: 16px 0 8px; color: var(--text-primary);">Haftung für Inhalte</h3>
+      <p>Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.</p>
+      <p>Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.</p>
+
+      <h3 style="font-size: 15px; margin: 16px 0 8px; color: var(--text-primary);">Haftung für Links</h3>
+      <p>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.</p>
+      <p>Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.</p>
+
+      <h3 style="font-size: 15px; margin: 16px 0 8px; color: var(--text-primary);">Urheberrecht</h3>
+      <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+      <p>Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.</p>
+    </div>
+
+    <div class="section">
+      <h2>Open Source</h2>
+      <p>
+        pBlock ist Open Source und unter der <strong>MIT-Lizenz</strong> lizenziert.<br>
+        Quellcode: <a href="https://github.com/philppplik/pBlock">github.com/philppplik/pBlock</a>
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Credits</h2>
+      <ul>
+        <li><strong><a href="https://github.com/Turtlecute33/toolz">Toolz/d3Host</a></strong> — Host-Listen für Ads, Analytics, Tracker (CC BY-NC-SA 4.0)</li>
+        <li><strong><a href="https://iconify.design/">Iconify</a></strong> — Icon-Framework (MIT)</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>pBlock — Open Source Ad Blocker | <a href="https://github.com/philppplik/pBlock">GitHub</a></p>
+  </footer>
+</body>
+</html>
