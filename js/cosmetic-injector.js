@@ -1,5 +1,6 @@
 // pBlock - Dynamic Cosmetic Filter Injector (Content Script)
 // Runs at document_start to catch everything early
+// Integrates DOM Monitor for MutationObserver + Scriptlets for anti-adblock
 
 (function() {
   'use strict';
@@ -80,18 +81,27 @@
     'taboola', 'outbrain'
   ];
 
-  // ==================== CSS INJECTION ====================
+  // ==================== STATE ====================
 
   let injectedStyle = null;
   let settings = { masterEnabled: true, categories: {}, whitelist: [] };
+  let domMonitor = null;
+  let adSelectorsForMatching = [];
+  let hiddenElements = new WeakSet(); // Track already-hidden elements
+  let blockCount = 0;
+  let statsFlushTimer = null;
+  const STATS_FLUSH_INTERVAL = 2000; // Send stats every 2 seconds
 
-  // Check if current domain is whitelisted
+  // ==================== WHITELIST ====================
+
   function isWhitelisted() {
     const whitelist = settings.whitelist || [];
     if (whitelist.length === 0) return false;
     const hostname = window.location.hostname;
     return whitelist.some(domain => hostname.includes(domain));
   }
+
+  // ==================== CSS INJECTION ====================
 
   function getActiveSelectors() {
     if (!settings.masterEnabled) return [];
@@ -120,6 +130,9 @@
       return;
     }
 
+    // Cache selectors for DOM Monitor element matching
+    adSelectorsForMatching = selectors;
+
     const css = selectors.join(', ') + ' { display: none !important; visibility: hidden !important; }';
 
     if (injectedStyle) {
@@ -129,10 +142,33 @@
       injectedStyle.id = 'adblocker-cosmetic-rules';
       injectedStyle.textContent = css;
 
-      // Insert at the very beginning of <head> or <html>
       if (document.documentElement) {
         document.documentElement.appendChild(injectedStyle);
       }
+    }
+
+    // Count elements that were hidden by CSS injection
+    countInitiallyHiddenElements(selectors);
+  }
+
+  function countInitiallyHiddenElements(selectors) {
+    // Count matching elements for stats (batch count)
+    let count = 0;
+    for (const selector of selectors) {
+      try {
+        const matches = document.querySelectorAll(selector);
+        for (const el of matches) {
+          if (!hiddenElements.has(el)) {
+            hiddenElements.add(el);
+            count++;
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (count > 0) {
+      blockCount += count;
+      scheduleFlushStats();
     }
   }
 
@@ -141,131 +177,225 @@
       injectedStyle.remove();
       injectedStyle = null;
     }
+    adSelectorsForMatching = [];
   }
 
-  // ==================== MUTATION OBSERVER ====================
+  // ==================== DOM MONITOR INTEGRATION ====================
 
-  let observer = null;
+  /**
+   * Callback for DOM Monitor — handles newly added elements
+   * This catches dynamically injected ads that appear after initial CSS injection
+   */
+  function onDOMMonitorEvent(event) {
+    if (event.type !== 'elements') return;
+    if (isWhitelisted()) return;
+    if (!settings.masterEnabled) return;
+    if (adSelectorsForMatching.length === 0) return;
 
-  function isAdElement(node) {
-    if (node.nodeType !== Node.ELEMENT_NODE) return false;
+    let didHide = false;
 
-    const tag = node.tagName.toLowerCase();
-    const className = (node.className || '').toString().toLowerCase();
-    const id = (node.id || '').toLowerCase();
-    const src = node.getAttribute('src') || '';
-    const dataAttrs = Array.from(node.attributes || [])
-      .map(a => a.name + '=' + a.value).join(' ').toLowerCase();
+    // For each new element, check if it or its children match ad selectors
+    for (const el of event.elements) {
+      if (el.nodeType !== 1) continue;
 
-    // Check for ad-related class names
-    const adClassPatterns = ['adbox', 'banner_ads', 'adsbox', 'textads',
-      'ad-banner', 'ad-container', 'ad-wrapper', 'ad-placement',
-      'ad-slot', 'advertisement', 'advertising', 'sponsored',
-      'promo-banner', 'adsbygoogle'];
+      // Check the element itself against all selectors
+      for (const selector of adSelectorsForMatching) {
+        try {
+          if (el.matches(selector)) {
+            hideElement(el);
+            didHide = true;
+            break;
+          }
+        } catch (e) {
+          // Invalid selector, skip
+        }
+      }
 
-    for (const pattern of adClassPatterns) {
-      if (className.includes(pattern) || id.includes(pattern)) return true;
-    }
-
-    // Check for ad-related data attributes
-    if (/data-(ad|ads|advertisement|sponsor)/.test(dataAttrs)) return true;
-
-    // Check for ad scripts
-    if (tag === 'script' && src) {
-      for (const pattern of AD_SCRIPT_PATTERNS) {
-        if (src.includes(pattern)) {
-          console.log('[AdBlocker] Blocking ad script:', src);
-          return true;
+      // Check children
+      if (el.querySelectorAll) {
+        for (const selector of adSelectorsForMatching) {
+          try {
+            const matches = el.querySelectorAll(selector);
+            if (matches.length > 0) {
+              matches.forEach(hideElement);
+              didHide = true;
+            }
+          } catch (e) {
+            // Invalid selector, skip
+          }
         }
       }
     }
 
-    // Check for ad iframes
-    if (tag === 'iframe' && src) {
-      const adIframePatterns = ['doubleclick', 'googlesyndication',
-        'adservice', 'amazon-adsystem', 'adnxs', 'ads-twitter'];
-      for (const pattern of adIframePatterns) {
-        if (src.includes(pattern)) return true;
-      }
+    // Schedule stats flush if we hid anything
+    if (didHide) {
+      scheduleFlushStats();
     }
-
-    return false;
   }
 
   function hideElement(node) {
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
+    if (node.nodeType !== 1) return;
+
+    // Skip if already hidden by us
+    if (hiddenElements.has(node)) return;
+    hiddenElements.add(node);
+
+    // Track block for stats
+    blockCount++;
 
     // For scripts, prevent execution by removing
     if (node.tagName === 'SCRIPT') {
-      node.type = 'blocked/blocked'; // Prevents execution
+      node.type = 'blocked/blocked';
       node.remove();
       return;
     }
 
-    // For other elements, hide them
     node.style.setProperty('display', 'none', 'important');
     node.style.setProperty('visibility', 'hidden', 'important');
   }
 
-  function handleMutations(mutations) {
-    // Skip if whitelisted
-    if (isWhitelisted()) return;
+  // ==================== STATS TRACKING ====================
 
-    for (const mutation of mutations) {
-      // Check added nodes
-      for (const node of mutation.addedNodes) {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          // Check the node itself
-          if (isAdElement(node)) {
-            hideElement(node);
-          }
+  function scheduleFlushStats() {
+    if (statsFlushTimer) return;
+    statsFlushTimer = setTimeout(flushStats, STATS_FLUSH_INTERVAL);
+  }
 
-          // Check children recursively (for containers)
-          if (node.querySelectorAll) {
-            const adChildren = node.querySelectorAll(
-              '[class*="adbox"], [class*="banner_ads"], [class*="adsbox"], ' +
-              '[class*="textads"], [class*="ad-banner"], [class*="ad-container"], ' +
-              '[class*="ad-wrapper"], [class*="advertisement"], .adsbygoogle, ' +
-              'script[src*="ads.js"], script[src*="pagead.js"]'
-            );
-            adChildren.forEach(hideElement);
-          }
-        }
-      }
+  function flushStats() {
+    statsFlushTimer = null;
+    if (blockCount === 0) return;
+
+    const countToSend = blockCount;
+    blockCount = 0;
+
+    chrome.runtime.sendMessage({
+      type: 'recordCosmeticBlocks',
+      count: countToSend,
+      domain: window.location.hostname
+    }).catch(() => {
+      // Background might not be ready, keep the count
+      blockCount += countToSend;
+    });
+  }
+
+  function startDOMMonitor() {
+    if (typeof window.PBlockDOMMonitor === 'undefined') {
+      console.warn('[pBlock] DOM Monitor not available, falling back to basic observer');
+      startFallbackObserver();
+      return;
+    }
+
+    domMonitor = new window.PBlockDOMMonitor.DOMMonitor(onDOMMonitorEvent);
+    domMonitor.start(window);
+
+    // Run initial query to catch elements already in DOM
+    domMonitor.queryAll(window);
+  }
+
+  function stopDOMMonitor() {
+    if (domMonitor) {
+      domMonitor.stop();
+      domMonitor = null;
     }
   }
 
-  function startObserver() {
-    if (observer) return;
+  // Fallback basic observer if DOM Monitor fails to load
+  let fallbackObserver = null;
 
-    observer = new MutationObserver(handleMutations);
-    observer.observe(document.documentElement || document, {
+  function startFallbackObserver() {
+    if (fallbackObserver) return;
+
+    fallbackObserver = new MutationObserver((mutations) => {
+      if (isWhitelisted()) return;
+      if (adSelectorsForMatching.length === 0) return;
+
+      let didHide = false;
+
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== 1) continue;
+
+          for (const selector of adSelectorsForMatching) {
+            try {
+              if (node.matches(selector)) {
+                hideElement(node);
+                didHide = true;
+                break;
+              }
+            } catch (e) {}
+          }
+
+          if (node.querySelectorAll) {
+            for (const selector of adSelectorsForMatching) {
+              try {
+                const matches = node.querySelectorAll(selector);
+                if (matches.length > 0) {
+                  matches.forEach(hideElement);
+                  didHide = true;
+                }
+              } catch (e) {}
+            }
+          }
+        }
+      }
+
+      if (didHide) {
+        scheduleFlushStats();
+      }
+    });
+
+    fallbackObserver.observe(document.documentElement || document, {
       childList: true,
       subtree: true
     });
   }
 
+  // ==================== SCRIPTLET INJECTION ====================
+
+  function injectScriptlets() {
+    if (typeof window.PBlockScriptlets === 'undefined') {
+      console.warn('[pBlock] Scriptlets module not available');
+      return;
+    }
+
+    if (!settings.masterEnabled || isWhitelisted()) return;
+
+    const categories = settings.categories || {};
+    const scriptletsToInject = [];
+
+    // Anti-adblock scriptlets for ads category
+    if (categories.ads?.enabled !== false) {
+      scriptletsToInject.push('nobab.js', 'noad.js', 'nowoar.js');
+    }
+
+    // Anti-detection scriptlets for analytics category
+    if (categories.analytics?.enabled !== false) {
+      scriptletsToInject.push('noeval.js');
+    }
+
+    if (scriptletsToInject.length > 0) {
+      window.PBlockScriptlets.injectScriptlets(scriptletsToInject, document);
+    }
+  }
+
   // ==================== SCRIPT BLOCKING ====================
 
-  // Block ad scripts by overriding createElement
   function patchScriptCreation() {
     const originalCreateElement = document.createElement;
     document.createElement = function(tagName, options) {
       const element = originalCreateElement.call(this, tagName, options);
 
-      // Skip if whitelisted
       if (isWhitelisted()) {
         return element;
       }
 
       if (tagName.toLowerCase() === 'script') {
-        // Intercept src setting
         const originalSetAttribute = element.setAttribute;
         element.setAttribute = function(name, value) {
           if (name === 'src') {
             for (const pattern of AD_SCRIPT_PATTERNS) {
               if (value.includes(pattern)) {
-                console.log('[AdBlocker] Blocked script src:', value);
+                console.log('[pBlock] Blocked script src:', value);
                 element.type = 'blocked/blocked';
                 return;
               }
@@ -274,7 +404,6 @@
           return originalSetAttribute.call(this, name, value);
         };
 
-        // Also intercept direct src property
         const descriptor = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, 'src');
         if (descriptor && descriptor.set) {
           const originalSrcSetter = descriptor.set;
@@ -282,7 +411,7 @@
             set: function(value) {
               for (const pattern of AD_SCRIPT_PATTERNS) {
                 if (value.includes(pattern)) {
-                  console.log('[AdBlocker] Blocked script src property:', value);
+                  console.log('[pBlock] Blocked script src property:', value);
                   element.type = 'blocked/blocked';
                   return;
                 }
@@ -308,17 +437,17 @@
         settings = response;
       }
       injectCosmeticCSS();
+      injectScriptlets();
     });
 
-    // Start observing DOM changes
+    // Start DOM Monitor for dynamic element detection
     if (document.documentElement) {
-      startObserver();
+      startDOMMonitor();
     } else {
-      // Wait for documentElement
       const docObserver = new MutationObserver(() => {
         if (document.documentElement) {
           docObserver.disconnect();
-          startObserver();
+          startDOMMonitor();
         }
       });
       docObserver.observe(document, { childList: true });
@@ -333,6 +462,13 @@
     if (message.type === 'updateSettings') {
       settings = message.settings;
       injectCosmeticCSS();
+
+      // Re-inject scriptlets if settings changed significantly
+      // (only if monitor was already running, meaning page is loaded)
+      if (domMonitor) {
+        injectScriptlets();
+      }
+
       sendResponse({ success: true });
     }
   });
