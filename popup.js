@@ -1,4 +1,4 @@
-// pBlock - Popup Script (v3.2.0)
+// pBlock - Popup Script (v4.0.0 Friendly Bird)
 
 let currentLevel = 'simple';
 let state = null;
@@ -44,6 +44,9 @@ const categoryBreakdown = document.getElementById('categoryBreakdown');
 const liveIndicator = document.getElementById('liveIndicator');
 const simpleModeSection = document.getElementById('simpleModeSection');
 const expertModeSection = document.getElementById('expertModeSection');
+const elementRulesSection = document.getElementById('elementRulesSection');
+const elementRulesCount = document.getElementById('elementRulesCount');
+const manageElementRules = document.getElementById('manageElementRules');
 const levelBtns = document.querySelectorAll('.level-btn');
 const openOptions = document.getElementById('openOptions');
 const protectionSlider = document.getElementById('protectionSlider');
@@ -180,6 +183,12 @@ function updateUI() {
   const isSimple = currentLevel === 'simple';
   simpleModeSection.style.display = isSimple ? 'block' : 'none';
   expertModeSection.style.display = isSimple ? 'none' : 'block';
+  elementRulesSection.style.display = isSimple ? 'none' : 'flex';
+
+  // Update element rules count
+  if (elementRulesCount && state.elementRulesCount !== undefined) {
+    elementRulesCount.textContent = state.elementRulesCount;
+  }
 
   // Update slider position from stored value
   if (isSimple && state.settings.sliderValue !== undefined) {
@@ -336,6 +345,13 @@ function setupEventListeners() {
     e.preventDefault();
     chrome.runtime.openOptionsPage();
   });
+
+  // Manage element rules - open options page to elements section
+  if (manageElementRules) {
+    manageElementRules.addEventListener('click', () => {
+      chrome.tabs.create({ url: chrome.runtime.getURL('options.html#elements') });
+    });
+  }
 
   // Open privacy page
   const openPrivacy = document.getElementById('openPrivacy');
