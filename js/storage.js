@@ -85,6 +85,9 @@ const STORAGE_DEFAULTS = {
   // Custom user rules
   customRules: [],
 
+  // Element blocking rules (from right-click picker)
+  elementRules: [],
+
   // Statistics
   statistics: {
     today: 0,
@@ -143,6 +146,7 @@ const StorageManager = {
     if (stored.sliderValue !== undefined) merged.sliderValue = stored.sliderValue;
     if (stored.whitelist) merged.whitelist = stored.whitelist;
     if (stored.customRules) merged.customRules = stored.customRules;
+    if (stored.elementRules) merged.elementRules = stored.elementRules;
 
     if (stored.categories) {
       for (const [catKey, catValue] of Object.entries(stored.categories)) {
@@ -233,6 +237,50 @@ const StorageManager = {
     const stored = await this.get('customRules');
     const customRules = (stored.customRules || []).filter((_, i) => i !== index);
     await this.set({ customRules });
+  },
+
+  // === Element Blocking Rules ===
+
+  async addElementRule(rule) {
+    const stored = await this.get('elementRules');
+    const elementRules = stored.elementRules || [];
+    elementRules.push({
+      selector: rule.selector,
+      domain: rule.siteOnly ? rule.domain : null,
+      siteOnly: rule.siteOnly || false,
+      created: Date.now()
+    });
+    await this.set({ elementRules });
+    return elementRules;
+  },
+
+  async removeElementRule(index) {
+    const stored = await this.get('elementRules');
+    const elementRules = (stored.elementRules || []).filter((_, i) => i !== index);
+    await this.set({ elementRules });
+    return elementRules;
+  },
+
+  async getElementRules(domain = null) {
+    const stored = await this.get('elementRules');
+    const elementRules = stored.elementRules || [];
+    if (domain) {
+      return elementRules.filter(r => !r.siteOnly || r.domain === domain);
+    }
+    return elementRules;
+  },
+
+  async clearAllElementRules() {
+    await this.set({ elementRules: [] });
+  },
+
+  async undoLastElementBlock() {
+    const stored = await this.get('elementRules');
+    const elementRules = stored.elementRules || [];
+    if (elementRules.length === 0) return null;
+    const removed = elementRules.pop();
+    await this.set({ elementRules });
+    return removed;
   },
 
   async exportSettings() {
