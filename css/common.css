@@ -1,27 +1,31 @@
-/* pBlock - Shared Styles */
+/* pBlock v4.0.0 "Friendly Bird" - Shared Styles
+   Inspired by Landing Page Design */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Colors */
-  --bg-primary: #1C1C1C;
-  --bg-secondary: #161616;
-  --bg-tertiary: #1f1f1f;
-  --bg-hover: #2a2a2a;
-  --border-color: #2a2a2a;
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #6e7681;
+  /* Colors - LP Dark Theme */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f0f;
+  --bg-tertiary: #181818;
+  --bg-hover: #222222;
+  --border-color: rgba(255, 255, 255, 0.06);
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
 
-  /* Accent Colors - Red gradient */
-  --accent-primary: #E54748;
-  --accent-hover: #EE767C;
-  --accent-dim: rgba(229, 71, 72, 0.1);
-  --accent-gradient: linear-gradient(135deg, #EE767C 0%, #E54748 50%, #9F0132 100%);
-  --accent-gradient-soft: linear-gradient(135deg, rgba(238, 118, 124, 0.15) 0%, rgba(159, 1, 50, 0.15) 100%);
+  /* Accent Colors - LP-style Red Gradient */
+  --accent-primary: #ef4444;
+  --accent-hover: #f87171;
+  --accent-dim: rgba(239, 68, 68, 0.12);
+  --accent-gradient: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
+  --accent-gradient-soft: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+  --accent-glow: 0 0 30px rgba(239, 68, 68, 0.3);
 
-  --success: #3fb950;
-  --warning: #d29922;
-  --danger: #f85149;
-  --danger-dim: rgba(248, 81, 73, 0.1);
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --danger-dim: rgba(239, 68, 68, 0.1);
 
   /* Spacing */
   --space-xs: 4px;
@@ -31,19 +35,20 @@
   --space-xl: 24px;
   --space-2xl: 32px;
 
-  /* Border Radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* Border Radius - LP-style rounded */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
   /* Transitions */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.25s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Font */
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  /* Font - Inter first (LP-style) */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, monospace;
 }
 
@@ -62,31 +67,39 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar */
+/* Scrollbar - LP Subtle */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-hover);
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* Cards */
+/* Cards - LP Glassmorphism */
 .card {
-  background: var(--bg-secondary);
+  background: rgba(15, 15, 15, 0.8);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-smooth);
+}
+
+.card:hover {
+  background: rgba(15, 15, 15, 0.9);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .card-header {
@@ -100,6 +113,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
 .card-subtitle {
@@ -108,7 +122,7 @@ body {
   margin-top: var(--space-xs);
 }
 
-/* Buttons */
+/* Buttons - LP-style rounded */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -116,30 +130,32 @@ body {
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-lg);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--text-primary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-smooth);
   text-decoration: none;
 }
 
 .btn:hover {
   background: var(--bg-tertiary);
-  border-color: var(--bg-hover);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .btn-primary {
   background: var(--accent-gradient);
   border-color: var(--accent-primary);
   color: #fff;
+  box-shadow: var(--accent-glow);
 }
 
 .btn-primary:hover {
   opacity: 0.9;
-  border-color: var(--accent-hover);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.5);
+  transform: scale(1.02);
 }
 
 .btn-danger {
@@ -237,7 +253,7 @@ body {
   color: var(--danger);
 }
 
-/* Stat Numbers */
+/* Stat Numbers - LP Glow Effect */
 .stat-number {
   font-size: 32px;
   font-weight: 700;
@@ -246,6 +262,7 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .stat-number-lg {
@@ -256,9 +273,10 @@ body {
   font-size: 12px;
   color: var(--text-secondary);
   margin-top: var(--space-xs);
+  letter-spacing: 0.02em;
 }
 
-/* Inputs */
+/* Inputs - LP-style */
 .input {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
@@ -268,13 +286,13 @@ body {
   color: var(--text-primary);
   font-size: 13px;
   font-family: var(--font-family);
-  transition: border-color var(--transition-fast);
+  transition: all var(--transition-smooth);
 }
 
 .input:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  box-shadow: 0 0 0 3px var(--accent-dim), var(--accent-glow);
 }
 
 .input::placeholder {
@@ -417,4 +435,108 @@ body {
 
 .animate-slide-up {
   animation: slideUp var(--transition-normal);
+}
+
+/* ==================== LP v4.0.0 Additions ==================== */
+
+/* Glass effect */
+.glass {
+  background: rgba(15, 15, 15, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Glow effects */
+.glow-red {
+  box-shadow: var(--accent-glow);
+}
+
+.glow-text {
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* LP-style hover lift */
+.hover-lift {
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Subtle border glow on hover */
+.hover-glow {
+  transition: all var(--transition-smooth);
+}
+
+.hover-glow:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+}
+
+/* Counter animation */
+@keyframes counterPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.counter-up {
+  animation: counterPulse 0.3s ease;
+}
+
+/* Live indicator pulse */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.live-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-primary);
+}
+
+.live-indicator.pulse {
+  animation: livePulse 0.5s ease;
+}
+
+/* Category bar styles (for popup breakdown) */
+.category-bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.category-bar-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.category-bar-track {
+  flex: 1;
+  height: 4px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.category-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-smooth);
+}
+
+.category-bar-value {
+  font-size: 10px;
+  color: var(--text-muted);
+  width: 30px;
+  text-align: right;
 }

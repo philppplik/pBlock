@@ -10,12 +10,15 @@
     body {
       min-height: 100vh;
       display: flex;
+      background: var(--bg-primary);
     }
 
-    /* Sidebar */
+    /* Sidebar - LP Glass */
     .sidebar {
       width: 240px;
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-right: 1px solid var(--border-color);
       padding: var(--space-xl);
       flex-shrink: 0;
@@ -33,6 +36,7 @@
     .sidebar-logo img {
       max-width: 100%;
       height: auto;
+      filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.2));
     }
 
     .nav-item {
@@ -40,22 +44,21 @@
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md) var(--space-lg);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
       color: var(--text-secondary);
       text-decoration: none;
       font-size: 13px;
       font-weight: 500;
-      transition: all var(--transition-fast);
+      transition: all var(--transition-smooth);
       margin-bottom: var(--space-xs);
       cursor: pointer;
     }
 
-    .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
     .nav-item.active {
       background: var(--accent-gradient-soft);
       color: var(--accent-primary);
-      border-left: 3px solid var(--accent-primary);
-      margin-left: -3px;
+      box-shadow: inset 3px 0 0 var(--accent-primary);
     }
     .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
@@ -65,18 +68,24 @@
       padding: var(--space-2xl);
       overflow-y: auto;
       max-height: 100vh;
+      background: var(--bg-primary);
     }
 
     .page-header { margin-bottom: var(--space-2xl); }
-    .page-header h1 { font-size: 24px; font-weight: 600; margin-bottom: var(--space-xs); }
+    .page-header h1 { font-size: 24px; font-weight: 600; margin-bottom: var(--space-xs); letter-spacing: -0.02em; }
     .page-header p { color: var(--text-secondary); font-size: 14px; }
 
     .privacy-section {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       padding: var(--space-xl);
       margin-bottom: var(--space-lg);
+      transition: all var(--transition-smooth);
+    }
+
+    .privacy-section:hover {
+      border-color: rgba(255, 255, 255, 0.08);
     }
 
     .privacy-section h2 {
@@ -86,6 +95,7 @@
       display: flex;
       align-items: center;
       gap: var(--space-sm);
+      letter-spacing: -0.01em;
     }
 
     .privacy-section p,
@@ -105,8 +115,8 @@
 
     .highlight-box {
       background: var(--accent-gradient-soft);
-      border: 1px solid var(--accent-primary);
-      border-radius: var(--radius-md);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-lg);
       padding: var(--space-lg);
       margin: var(--space-lg) 0;
     }
@@ -126,12 +136,12 @@
     .data-table td {
       padding: var(--space-md);
       text-align: left;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       font-size: 13px;
     }
 
     .data-table th {
-      background: var(--bg-tertiary);
+      background: rgba(255, 255, 255, 0.02);
       font-weight: 600;
       color: var(--text-primary);
     }
@@ -146,7 +156,7 @@
       border-radius: var(--radius-full);
       font-size: 11px;
       font-weight: 500;
-      background: rgba(63, 185, 80, 0.1);
+      background: rgba(34, 197, 94, 0.1);
       color: var(--success);
     }
 
@@ -165,9 +175,10 @@
       align-items: center;
       gap: var(--space-lg);
       padding: var(--space-lg);
-      background: var(--bg-tertiary);
-      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius-lg);
       margin-top: var(--space-lg);
+      border: 1px solid var(--border-color);
     }
 
     .contact-card .contact-icon {
@@ -206,7 +217,7 @@
   <main class="main">
     <div class="page-header">
       <h1>Datenschutzerklärung</h1>
-      <p>Letzte Aktualisierung: 14. März 2026</p>
+      <p>Letzte Aktualisierung: 15. März 2026</p>
     </div>
 
     <!-- Intro -->
