@@ -4,6 +4,8 @@ let state = null;
 let currentPage = 'overview';
 let allDomains = [];
 
+let currentElementFilter = 'all';
+
 document.addEventListener('DOMContentLoaded', async () => {
   await loadState();
   updateSidebarVisibility();
@@ -12,9 +14,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFilter();
   setupPresets();
   setupWhitelist();
+  setupElements();
   setupStatistics();
   setupExpert();
   setupBackup();
+  setupDebug();
   handleHashNavigation();
 });
 
@@ -63,7 +67,7 @@ function updateSidebarVisibility() {
   if (divider) divider.classList.toggle('hidden', !isExpert);
 
   // If currently on an expert-only page and in simple mode, redirect to overview
-  const expertPages = ['filter', 'presets', 'whitelist', 'expert', 'backup'];
+  const expertPages = ['filter', 'presets', 'whitelist', 'elements', 'expert', 'backup'];
   if (!isExpert && expertPages.includes(currentPage)) {
     navigateTo('overview');
   }
@@ -98,6 +102,7 @@ function refreshCurrentPage() {
     case 'overview': updateOverview(); break;
     case 'statistics': updateStatistics(); break;
     case 'whitelist': updateWhitelist(); break;
+    case 'elements': updateElements(); break;
     case 'expert': updateExpert(); break;
   }
 }
@@ -329,6 +334,102 @@ function updateWhitelist() {
   });
 }
 
+// ==================== ELEMENT RULES ====================
+
+function setupElements() {
+  // Filter buttons
+  document.querySelectorAll('.element-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentElementFilter = btn.dataset.filter;
+      document.querySelectorAll('.element-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateElements();
+    });
+  });
+
+  // Clear all button
+  document.getElementById('clear-element-rules').addEventListener('click', () => {
+    if (confirm('Alle Element-Regeln löschen? Dies kann nicht rückgängig gemacht werden.')) {
+      chrome.runtime.sendMessage({ type: 'clearAllElementRules' }, async () => {
+        await loadState();
+        updateElements();
+      });
+    }
+  });
+
+  updateElements();
+}
+
+function updateElements() {
+  if (!state) return;
+
+  const rules = state.elementRules || [];
+  const globalRules = rules.filter(r => !r.siteOnly);
+  const siteRules = rules.filter(r => r.siteOnly);
+
+  // Update stats
+  document.getElementById('el-total').textContent = rules.length;
+  document.getElementById('el-global').textContent = globalRules.length;
+  document.getElementById('el-site').textContent = siteRules.length;
+
+  // Filter rules based on current filter
+  let filteredRules = rules;
+  if (currentElementFilter === 'global') {
+    filteredRules = globalRules;
+  } else if (currentElementFilter === 'site') {
+    filteredRules = siteRules;
+  }
+
+  // Render table
+  const tbody = document.getElementById('element-rules-body');
+  const emptyMsg = document.getElementById('element-rules-empty');
+
+  if (filteredRules.length === 0) {
+    tbody.innerHTML = '';
+    emptyMsg.style.display = 'block';
+    return;
+  }
+
+  emptyMsg.style.display = 'none';
+  tbody.innerHTML = filteredRules.map((rule, displayIndex) => {
+    // Find actual index in full rules array for deletion
+    const actualIndex = rules.indexOf(rule);
+    const domainDisplay = rule.siteOnly ? rule.domain : 'Global';
+    const domainClass = rule.siteOnly ? '' : 'global';
+    const createdDate = rule.created ? new Date(rule.created).toLocaleDateString('de-DE') : '-';
+
+    return `
+      <tr>
+        <td>
+          <div class="element-selector" title="${escapeHtml(rule.selector)}">${escapeHtml(rule.selector)}</div>
+          <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">${createdDate}</div>
+        </td>
+        <td><span class="element-domain ${domainClass}">${domainDisplay}</span></td>
+        <td>
+          <button class="element-delete-btn" data-index="${actualIndex}">Löschen</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  // Add delete event listeners
+  tbody.querySelectorAll('.element-delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.dataset.index);
+      chrome.runtime.sendMessage({ type: 'removeElementRule', index }, async () => {
+        await loadState();
+        updateElements();
+      });
+    });
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 // ==================== STATISTICS ====================
 
 function setupStatistics() {
@@ -474,6 +575,54 @@ function setupBackup() {
         alert('Einstellungen zurückgesetzt.');
       });
     }
+  });
+}
+
+// ==================== DEBUG ====================
+
+function setupDebug() {
+  const debugOutput = document.getElementById('debug-output');
+
+  function showOutput(text) {
+    debugOutput.style.display = 'block';
+    debugOutput.textContent = text;
+  }
+
+  // Test stats button
+  document.getElementById('debug-test-stats').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'testStats' }, (response) => {
+      if (response?.success) {
+        showOutput('Test-Block erfolgreich!\n\nStats:\n' + JSON.stringify(response.stats, null, 2));
+        // Reload state to see updated values
+        loadState();
+      } else {
+        showOutput('Fehler: ' + JSON.stringify(response));
+      }
+    });
+  });
+
+  // Check API button
+  document.getElementById('debug-check-api').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'checkStatsApi' }, (response) => {
+      const status = {
+        'onRuleMatchedDebug verfügbar': response?.onRuleMatchedDebugAvailable ? 'JA' : 'NEIN',
+        'Polling aktiv': response?.usingPolling ? 'JA' : 'NEIN',
+        'Letzte gematchte Regeln': response?.lastMatchedRuleCount || 0
+      };
+      showOutput('API Status:\n\n' + JSON.stringify(status, null, 2) +
+        '\n\nHinweis: onRuleMatchedDebug funktioniert nur im Developer-Modus (unpacked extensions).');
+    });
+  });
+
+  // Show raw stats button
+  document.getElementById('debug-show-raw').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'getRawStats' }, (response) => {
+      if (response) {
+        showOutput('Rohe Statistiken (aus chrome.storage.local):\n\n' + JSON.stringify(response, null, 2));
+      } else {
+        showOutput('Keine Statistiken gefunden. Storage ist leer.');
+      }
+    });
   });
 }
 

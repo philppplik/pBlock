@@ -10,12 +10,15 @@
     body {
       min-height: 100vh;
       display: flex;
+      background: var(--bg-primary);
     }
 
-    /* Sidebar */
+    /* Sidebar - LP Glass */
     .sidebar {
       width: 240px;
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-right: 1px solid var(--border-color);
       padding: var(--space-xl);
       flex-shrink: 0;
@@ -33,6 +36,7 @@
     .sidebar-logo img {
       max-width: 100%;
       height: auto;
+      filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.2));
     }
 
     .nav-item {
@@ -40,22 +44,21 @@
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md) var(--space-lg);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
       color: var(--text-secondary);
       text-decoration: none;
       font-size: 13px;
       font-weight: 500;
-      transition: all var(--transition-fast);
+      transition: all var(--transition-smooth);
       margin-bottom: var(--space-xs);
       cursor: pointer;
     }
 
-    .nav-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
     .nav-item.active {
       background: var(--accent-gradient-soft);
       color: var(--accent-primary);
-      border-left: 3px solid var(--accent-primary);
-      margin-left: -3px;
+      box-shadow: inset 3px 0 0 var(--accent-primary);
     }
     .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
@@ -90,16 +93,17 @@
       padding: var(--space-2xl);
       overflow-y: auto;
       max-height: 100vh;
+      background: var(--bg-primary);
     }
 
     .page-header { margin-bottom: var(--space-2xl); }
-    .page-header h1 { font-size: 24px; font-weight: 600; margin-bottom: var(--space-xs); }
+    .page-header h1 { font-size: 24px; font-weight: 600; margin-bottom: var(--space-xs); letter-spacing: -0.02em; }
     .page-header p { color: var(--text-secondary); font-size: 14px; }
 
     .page { display: none; }
     .page.active { display: block; animation: fadeIn 0.2s ease; }
 
-    /* Level Cards */
+    /* Level Cards - LP Style */
     .level-cards {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -108,26 +112,26 @@
     }
 
     .level-card {
-      background: var(--bg-secondary);
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      background: rgba(15, 15, 15, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
       padding: var(--space-xl);
       text-align: center;
       cursor: pointer;
-      transition: all var(--transition-normal);
+      transition: all var(--transition-smooth);
     }
 
-    .level-card:hover { border-color: var(--bg-hover); }
+    .level-card:hover { border-color: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
     .level-card.active {
       border-color: var(--accent-primary);
       background: var(--accent-gradient-soft);
-      box-shadow: 0 0 20px rgba(229, 71, 72, 0.15);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
     }
     .level-card .level-icon { font-size: 32px; margin-bottom: var(--space-md); }
-    .level-card .level-name { font-size: 16px; font-weight: 600; margin-bottom: var(--space-sm); }
+    .level-card .level-name { font-size: 16px; font-weight: 600; margin-bottom: var(--space-sm); letter-spacing: -0.01em; }
     .level-card .level-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
 
-    /* Stats */
+    /* Stats - LP Glow */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -136,11 +140,17 @@
     }
 
     .stat-card {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       padding: var(--space-xl);
       text-align: center;
+      transition: all var(--transition-smooth);
+    }
+
+    .stat-card:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
     }
 
     .stat-card .stat-value {
@@ -150,19 +160,20 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.02em;
     }
     .stat-card .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: var(--space-sm); }
 
-    /* Chart */
+    /* Chart - LP Modern */
     .chart-container {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       padding: var(--space-xl);
       margin-bottom: var(--space-2xl);
     }
 
-    .chart-title { font-size: 14px; font-weight: 600; margin-bottom: var(--space-lg); }
+    .chart-title { font-size: 14px; font-weight: 600; margin-bottom: var(--space-lg); letter-spacing: -0.01em; }
 
     .chart-bars {
       display: flex;
@@ -186,11 +197,12 @@
       border-radius: var(--radius-sm) var(--radius-sm) 0 0;
       min-height: 4px;
       transition: height 0.3s ease;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
     }
 
     .chart-label { font-size: 10px; color: var(--text-muted); margin-top: var(--space-xs); }
 
-    /* Category Grid */
+    /* Category Grid - LP Style */
     .category-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -198,10 +210,15 @@
     }
 
     .filter-category-card {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       overflow: hidden;
+      transition: all var(--transition-smooth);
+    }
+
+    .filter-category-card:hover {
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
     .filter-category-header {
@@ -209,12 +226,12 @@
       align-items: center;
       justify-content: space-between;
       padding: var(--space-lg);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     .filter-category-header .info { display: flex; align-items: center; gap: var(--space-md); }
     .filter-category-header .icon { font-size: 24px; }
-    .filter-category-header .name { font-size: 14px; font-weight: 600; }
+    .filter-category-header .name { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
     .filter-category-header .count { font-size: 11px; color: var(--text-muted); }
 
     .filter-subcategories { padding: var(--space-sm); }
@@ -224,24 +241,24 @@
       align-items: center;
       justify-content: space-between;
       padding: var(--space-md);
-      border-radius: var(--radius-md);
-      transition: background var(--transition-fast);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-smooth);
     }
 
-    .filter-sub-item:hover { background: var(--bg-tertiary); }
+    .filter-sub-item:hover { background: rgba(255, 255, 255, 0.03); }
     .filter-sub-item .info { flex: 1; }
     .filter-sub-item .name { font-size: 13px; font-weight: 500; }
     .filter-sub-item .desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .filter-sub-item .count { font-size: 11px; color: var(--text-secondary); margin-left: var(--space-md); }
 
-    /* Whitelist */
+    /* Whitelist - LP Style */
     .whitelist-input-row { display: flex; gap: var(--space-md); margin-bottom: var(--space-lg); }
     .whitelist-input-row .input { flex: 1; }
 
     .whitelist-list {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       overflow: hidden;
     }
 
@@ -254,12 +271,12 @@
 
     .btn-row { display: flex; gap: var(--space-md); margin-top: var(--space-lg); }
 
-    /* Domain Table */
+    /* Domain Table - LP Style */
     .domain-table {
       width: 100%;
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       overflow: hidden;
       border-collapse: collapse;
     }
@@ -267,22 +284,23 @@
     .domain-table th, .domain-table td {
       padding: var(--space-md) var(--space-lg);
       text-align: left;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     .domain-table th {
-      background: var(--bg-tertiary);
+      background: rgba(255, 255, 255, 0.02);
       font-size: 12px;
       font-weight: 600;
       color: var(--text-secondary);
       text-transform: uppercase;
+      letter-spacing: 0.05em;
       position: sticky;
       top: 0;
     }
 
     .domain-table td { font-size: 13px; }
     .domain-table tr:last-child td { border-bottom: none; }
-    .domain-table tr:hover td { background: var(--bg-tertiary); }
+    .domain-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
 
     /* Small toggles for domain table */
     /* Toggle icons (regular + small) */
@@ -294,7 +312,7 @@
       transform: translateY(-50%);
       font-size: 12px;
       color: var(--text-muted);
-      transition: all var(--transition-fast);
+      transition: all var(--transition-smooth);
     }
 
     .toggle input:checked + .slider .toggle-icon {
@@ -337,19 +355,24 @@
       background-position: 12px center;
     }
 
-    /* Presets */
+    /* Presets - LP Style */
     .preset-card {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       padding: var(--space-lg);
       margin-bottom: var(--space-md);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: all var(--transition-smooth);
     }
 
-    .preset-info h3 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-xs); }
+    .preset-card:hover {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .preset-info h3 { font-size: 14px; font-weight: 600; margin-bottom: var(--space-xs); letter-spacing: -0.01em; }
     .preset-info p { font-size: 12px; color: var(--text-secondary); }
     .preset-info .meta { font-size: 11px; color: var(--text-muted); margin-top: var(--space-xs); }
 
@@ -359,10 +382,10 @@
     .table-container {
       max-height: 400px;
       overflow-y: auto;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
     }
 
-    /* Expert stats row */
+    /* Expert stats row - LP Style */
     .expert-stats {
       display: flex;
       gap: var(--space-lg);
@@ -370,12 +393,17 @@
     }
 
     .expert-stat {
-      background: var(--bg-secondary);
+      background: rgba(15, 15, 15, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-lg);
       padding: var(--space-md) var(--space-lg);
       flex: 1;
       text-align: center;
+      transition: all var(--transition-smooth);
+    }
+
+    .expert-stat:hover {
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
     .expert-stat .value {
@@ -385,12 +413,62 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.02em;
     }
 
     .expert-stat .label {
       font-size: 11px;
       color: var(--text-secondary);
       margin-top: 2px;
+    }
+
+    /* Element filter buttons - LP Style */
+    .element-filter-btn {
+      opacity: 0.6;
+      border-radius: var(--radius-full);
+    }
+
+    .element-filter-btn.active {
+      opacity: 1;
+      background: var(--accent-gradient-soft);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* Element rules table */
+    .element-selector {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .element-domain {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .element-domain.global {
+      color: var(--accent-primary);
+      font-style: italic;
+    }
+
+    .element-delete-btn {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all var(--transition-smooth);
+    }
+
+    .element-delete-btn:hover {
+      background: var(--danger-dim);
     }
   </style>
 </head>
@@ -420,6 +498,9 @@
     </a>
     <a class="nav-item nav-expert" data-page="whitelist">
       <span class="nav-icon"><iconify-icon icon="mdi:clipboard-list"></iconify-icon></span> Whitelist
+    </a>
+    <a class="nav-item nav-expert" data-page="elements">
+      <span class="nav-icon"><iconify-icon icon="mdi:cursor-default-click"></iconify-icon></span> Elemente
     </a>
     <a class="nav-item nav-expert" data-page="expert">
       <span class="nav-icon"><iconify-icon icon="mdi:cog"></iconify-icon></span> Experten-Tabellen
@@ -519,6 +600,56 @@
 
       <div class="whitelist-list" id="whitelist-list">
         <div class="whitelist-empty">Keine Whitelist-Einträge</div>
+      </div>
+    </div>
+
+    <!-- Element Rules Page -->
+    <div class="page" id="page-elements">
+      <div class="page-header">
+        <h1>Element-Regeln</h1>
+        <p>Verwalte deine per Rechtsklick blockierten Elemente.</p>
+      </div>
+
+      <div class="expert-stats">
+        <div class="expert-stat">
+          <div class="value" id="el-total">0</div>
+          <div class="label">Regeln gesamt</div>
+        </div>
+        <div class="expert-stat">
+          <div class="value" id="el-global">0</div>
+          <div class="label">Global</div>
+        </div>
+        <div class="expert-stat">
+          <div class="value" id="el-site">0</div>
+          <div class="label">Seiten-spezifisch</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: var(--space-md); margin-bottom: var(--space-lg);">
+        <button class="btn btn-sm element-filter-btn active" data-filter="all">Alle</button>
+        <button class="btn btn-sm element-filter-btn" data-filter="global">Global</button>
+        <button class="btn btn-sm element-filter-btn" data-filter="site">Seiten-spezifisch</button>
+      </div>
+
+      <div class="table-container">
+        <table class="domain-table">
+          <thead>
+            <tr>
+              <th>CSS-Selektor</th>
+              <th>Domain</th>
+              <th style="width: 100px;">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="element-rules-body"></tbody>
+        </table>
+      </div>
+
+      <div id="element-rules-empty" class="whitelist-empty" style="display: none;">
+        Keine Element-Regeln vorhanden. Nutze den Rechtsklick "Element blockieren" um Elemente zu blockieren.
+      </div>
+
+      <div class="btn-row" style="margin-top: var(--space-lg);">
+        <button class="btn btn-danger" id="clear-element-rules">Alle Element-Regeln löschen</button>
       </div>
     </div>
 
@@ -642,7 +773,105 @@
       <div style="margin-bottom: 24px;">
         <div class="tag tag-accent" style="font-size: 14px; padding: 8px 16px;">
           <iconify-icon icon="mdi:tag" style="margin-right: 4px;"></iconify-icon>
-          v3.0.2 Red Bear — aktuell
+          v4.0.0 Friendly Bird — aktuell
+        </div>
+      </div>
+
+      <!-- v4.0.0 -->
+      <div class="card" style="margin-bottom: 16px; border-left: 3px solid var(--accent-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 16px;">
+            <iconify-icon icon="mdi:tag-outline" style="margin-right: 6px;"></iconify-icon>
+            v4.0.0 Friendly Bird
+          </h3>
+          <span class="tag tag-accent">Major Update</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+          <div><strong style="color: var(--text-primary);">Neues Design</strong></div>
+          <ul style="margin: 4px 0 12px 20px;">
+            <li>Komplett überarbeitetes Dark Theme (LP-inspiriert)</li>
+            <li>Glassmorphism-Effekte auf Karten und Sidebar</li>
+            <li>Neue Farbpalette mit kräftigerem Rot</li>
+            <li>Inter Font für modernere Typografie</li>
+            <li>Verbesserte Hover-Effekte und Animationen</li>
+          </ul>
+          <div><strong style="color: var(--text-primary);">Verbesserungen</strong></div>
+          <ul style="margin: 4px 0 0 20px;">
+            <li>Optimierte Scrollbar-Stile</li>
+            <li>Glow-Effekte auf Statistiken</li>
+            <li>Modernere Buttons mit abgerundeten Ecken</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- v3.2.0 -->
+      <div class="card" style="margin-bottom: 16px; border-left: 3px solid var(--success);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 16px;">
+            <iconify-icon icon="mdi:tag-outline" style="margin-right: 6px;"></iconify-icon>
+            v3.2.0 Red Bear
+          </h3>
+          <span class="tag tag-accent">Feature</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+          <div><strong style="color: var(--text-primary);">DOM Monitor</strong></div>
+          <ul style="margin: 4px 0 12px 20px;">
+            <li>Neuer DOM Monitor mit Debouncing (25ms) und Feature-Extraktion</li>
+            <li>Automatische Verarbeitung bei Schwellenwert (512 Nodes)</li>
+            <li>Tracking von IDs, Classes und Hrefs für neue Elemente</li>
+          </ul>
+          <div><strong style="color: var(--text-primary);">Scriptlets (Anti-Adblock)</strong></div>
+          <ul style="margin: 4px 0 12px 20px;">
+            <li>nobab.js — BlockAdBlock / FuckAdBlock Defuser</li>
+            <li>noad.js — Fake Ad-Globals (Google AdSense, etc.)</li>
+            <li>nowoar.js — Overlay-Entfernung (Adblock-Warnungen)</li>
+            <li>noeval.js — Eval/Function-Patching für Ad-Detection</li>
+          </ul>
+          <div><strong style="color: var(--text-primary);">Element Picker Fix</strong></div>
+          <ul style="margin: 4px 0 12px 20px;">
+            <li>Overlay wird temporär ausgeblendet für elementFromPoint()</li>
+            <li>Picker kann jetzt Elemente unter dem Overlay erkennen</li>
+          </ul>
+          <div><strong style="color: var(--text-primary);">Statistik-Fix</strong></div>
+          <ul style="margin: 4px 0 0 20px;">
+            <li>Cosmetic Blocks (CSS-Hiding) werden jetzt gezählt</li>
+            <li>Content Script meldet Blocks an Background via recordCosmeticBlocks</li>
+            <li>Batched Stats-Updates alle 2 Sekunden</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- v3.1.0 -->
+      <div class="card" style="margin-bottom: 16px; border-left: 3px solid var(--accent-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 16px;">
+            <iconify-icon icon="mdi:tag-outline" style="margin-right: 6px;"></iconify-icon>
+            v3.1.0 Red Bear
+          </h3>
+          <span class="tag">Feature</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+          <div><strong style="color: var(--text-primary);">Element Blocker Overhaul</strong></div>
+          <ul style="margin: 4px 0 12px 20px;">
+            <li>Rotes Theme (pBlock-Design) statt blau</li>
+            <li>Preview-Modal vor dem Blockieren mit editierbarem Selektor</li>
+            <li>"Nur auf dieser Seite" Toggle für lokale Regeln</li>
+            <li>Undo-Funktion mit Toast-Benachrichtigung (5s)</li>
+            <li>Eltern-Element Navigation via Mausrad</li>
+            <li>Neue "Elemente" Seite in Einstellungen zur Regelverwaltung</li>
+            <li>Element-Regeln Zähler im Popup (Experten-Modus)</li>
+          </ul>
+          <div><strong style="color: var(--text-primary);">Statistik-Fix</strong></div>
+          <ul style="margin: 4px 0 12px 20px;">
+            <li>Debug-Logging für onRuleMatchedDebug API</li>
+            <li>Polling-Fallback wenn API nicht verfügbar</li>
+            <li>Debug-UI auf Entwickler-Seite zum Testen</li>
+          </ul>
+          <div><strong style="color: var(--text-primary);">UI</strong></div>
+          <ul style="margin: 4px 0 0 20px;">
+            <li>Animierte Highlights mit Glow-Effekt</li>
+            <li>Verbesserter Tooltip mit Breadcrumb-Pfad und Dimensionen</li>
+          </ul>
         </div>
       </div>
 
@@ -800,7 +1029,7 @@
         <div style="font-size: 13px; color: var(--text-secondary); line-height: 2;">
           <div><strong style="color: var(--text-primary);">Manifest:</strong> V3 (Service Worker)</div>
           <div><strong style="color: var(--text-primary);">Permissions:</strong> storage, declarativeNetRequest, activeTab, scripting, contextMenus, notifications</div>
-          <div><strong style="color: var(--text-primary);">Content Scripts:</strong> cosmetic-injector.js (document_start), element-picker.js (document_end)</div>
+          <div><strong style="color: var(--text-primary);">Content Scripts:</strong> dom-monitor.js, scriptlets.js, cosmetic-injector.js (document_start), element-picker.js (document_end)</div>
           <div><strong style="color: var(--text-primary);">Icons:</strong> Iconify 1.0.7 (mdi preset, lokal gebunden)</div>
         </div>
       </div>
@@ -920,6 +1149,47 @@
           <iconify-icon icon="mdi:github"></iconify-icon>
           GitHub (bald)
         </span>
+      </div>
+
+      <!-- Debug / Stats Test -->
+      <div class="card" style="margin-top: 24px; border-color: var(--warning);">
+        <h3 style="margin-bottom: 12px; color: var(--warning);">
+          <iconify-icon icon="mdi:bug-outline" style="margin-right: 6px;"></iconify-icon>
+          Debug: Statistik-Test
+        </h3>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+          Teste ob die Statistiken funktionieren.
+        </p>
+
+        <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+          <button class="btn" id="debug-test-stats">
+            <iconify-icon icon="mdi:play"></iconify-icon>
+            Test-Block simulieren
+          </button>
+          <button class="btn" id="debug-check-api">
+            <iconify-icon icon="mdi:api"></iconify-icon>
+            API Status prüfen
+          </button>
+          <button class="btn" id="debug-show-raw">
+            <iconify-icon icon="mdi:database"></iconify-icon>
+            Rohe Stats anzeigen
+          </button>
+        </div>
+
+        <div id="debug-output" style="
+          background: var(--bg-primary);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 16px;
+          font-family: var(--font-mono);
+          font-size: 12px;
+          color: var(--text-secondary);
+          max-height: 200px;
+          overflow-y: auto;
+          white-space: pre-wrap;
+          word-break: break-all;
+          display: none;
+        "></div>
       </div>
     </div>
   </main>
