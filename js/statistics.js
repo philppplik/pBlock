@@ -1,4 +1,4 @@
-// pBlock - Statistics Tracking v3.2.0
+// pBlock - Statistics Tracking v4.0.0 Friendly Bird
 // Echtzeit-Stats mit Kategorie-Breakdown, Timeline und Bandbreite-Schätzung
 
 // ==================== CONSTANTS ====================

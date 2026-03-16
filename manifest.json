@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "pBlock",
-  "version": "3.0.2",
-  "description": "pBlock - Blockiert Werbung, Tracker und Social Media mit 3-stufigem Filter-System, Element-Picker und Cosmetik-Filtern.",
+  "version": "4.0.0",
+  "description": "pBlock v4.0.0 - Blockiert Werbung, Tracker und Social Media mit 3-stufigem Filter-System, Element-Picker und Cosmetik-Filtern.",
   "homepage_url": "https://philipp-paulik.de",
   "author": "Philipp Paulik",
   "permissions": [
@@ -37,7 +37,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/cosmetic-injector.js"],
+      "js": ["js/dom-monitor.js", "js/scriptlets.js", "js/cosmetic-injector.js"],
       "run_at": "document_start",
       "all_frames": true
     },
