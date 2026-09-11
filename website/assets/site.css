@@ -146,9 +146,33 @@ img {
   border-bottom-color: var(--accent);
 }
 
-@media (max-width: 620px) {
-  .site-header nav a:not(:last-child) {
+/*
+ * Auf schmalen Fenstern schrumpft die Navigation, statt Einträge auszublenden.
+ * Einzelne Links wegzulassen führt sonst dazu, dass ausgerechnet der am
+ * wenigsten nützliche übrig bleibt.
+ */
+@media (max-width: 640px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-inline: 1rem;
+  }
+
+  .site-header nav {
+    width: 100%;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    /* Notfalls seitlich scrollen statt umbrechen — bleibt eine Zeile. */
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .site-header nav::-webkit-scrollbar {
     display: none;
+  }
+
+  .site-header nav a {
+    white-space: nowrap;
   }
 }
 
