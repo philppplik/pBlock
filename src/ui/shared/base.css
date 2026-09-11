@@ -44,6 +44,19 @@ textarea {
   color: inherit;
 }
 
+/*
+ * `[hidden]` muss gewinnen.
+ *
+ * Die Regel des Browsers ist nur `[hidden] { display: none }` und hat damit
+ * geringere Spezifität als jede Klasse, die `display` setzt. Eine Schaltfläche
+ * mit `.btn { display: inline-flex }` blieb deshalb trotz `hidden` sichtbar —
+ * im Einrichtungsassistenten führte das dazu, dass auf Schritt 1 ein
+ * „Zurück“-Knopf stand.
+ */
+[hidden] {
+  display: none !important;
+}
+
 /* Fokus immer sichtbar — aber nur, wenn er auch gebraucht wird. */
 :focus-visible {
   outline: var(--focus-ring);

@@ -26,8 +26,11 @@ const dom = {
 /**
  * Zeigt einen Schritt an.
  * @param {number} step
+ * @param {boolean} [moveFocus=true] Ob der Fokus auf die Überschrift wandern soll.
+ *   Beim ersten Aufbau der Seite bewusst `false`: Ein Fokusrahmen, den niemand
+ *   durch eine Eingabe ausgelöst hat, wirkt wie ein Darstellungsfehler.
  */
-function showStep(step) {
+function showStep(step, moveFocus = true) {
   currentStep = Math.min(Math.max(step, 1), TOTAL_STEPS);
 
   for (const section of document.querySelectorAll('.step')) {
@@ -40,6 +43,7 @@ function showStep(step) {
 
   // Fokus auf die Überschrift des neuen Schritts, damit Bildschirmleser den
   // Wechsel mitbekommen.
+  if (!moveFocus) return;
   const heading = document.querySelector(`.step[data-step="${currentStep}"] h1`);
   if (heading) {
     heading.setAttribute('tabindex', '-1');
@@ -98,4 +102,4 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowLeft' && currentStep > 1) showStep(currentStep - 1);
 });
 
-showStep(1);
+showStep(1, false);
