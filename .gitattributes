@@ -1,0 +1,14 @@
+# Einheitliche Zeilenenden im Repository, unabhängig vom Betriebssystem.
+* text=auto eol=lf
+
+# Binärdateien nicht anfassen.
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+
+# Generierte Dateien aus Diffs und Sprachstatistik heraushalten.
+package-lock.json linguist-generated=true -diff
+src/vendor/** linguist-vendored=true

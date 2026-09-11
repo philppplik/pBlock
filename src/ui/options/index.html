@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pBlock — Einstellungen</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+
+  <body class="options">
+    <a class="skip-link" href="#content">Zum Inhalt springen</a>
+
+    <!-- Seitenleiste --------------------------------------------------- -->
+    <nav class="sidebar" aria-label="Bereiche">
+      <div class="sidebar__brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span>
+          <strong>pBlock</strong>
+          <small id="app-version">–</small>
+        </span>
+      </div>
+
+      <ul class="sidebar__nav" role="tablist">
+        <li><button role="tab" data-page="overview" aria-selected="true">Übersicht</button></li>
+        <li><button role="tab" data-page="filters" aria-selected="false">Filter</button></li>
+        <li><button role="tab" data-page="lists" aria-selected="false">Filterlisten</button></li>
+        <li><button role="tab" data-page="exceptions" aria-selected="false">Ausnahmen</button></li>
+        <li><button role="tab" data-page="elements" aria-selected="false">Ausgeblendet</button></li>
+        <li><button role="tab" data-page="stats" aria-selected="false">Statistik</button></li>
+        <li><button role="tab" data-page="diagnostics" aria-selected="false">Diagnose</button></li>
+        <li><button role="tab" data-page="backup" aria-selected="false">Sicherung</button></li>
+        <li><button role="tab" data-page="about" aria-selected="false">Über</button></li>
+      </ul>
+
+      <div class="sidebar__foot">
+        <label class="master">
+          <span id="sidebar-master-label">Schutz aktiv</span>
+          <span class="switch">
+            <input type="checkbox" id="master-toggle" aria-describedby="sidebar-master-label" />
+            <span class="switch__track"></span>
+          </span>
+        </label>
+      </div>
+    </nav>
+
+    <main id="content" class="content">
+      <!-- ===== Übersicht ===== -->
+      <section class="page page--active" id="page-overview" role="tabpanel">
+        <header class="page__head">
+          <h1>Übersicht</h1>
+          <p>Was pBlock gerade für dich tut.</p>
+        </header>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat__label">Heute</span>
+            <span class="stat__value" id="ov-today">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Diese Woche</span>
+            <span class="stat__value" id="ov-week">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Insgesamt</span>
+            <span class="stat__value" id="ov-total">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">Datenvolumen gespart (ca.)</span>
+            <span class="stat__value" id="ov-bandwidth">–</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Letzte 14 Tage</h2>
+          <div
+            class="chart"
+            id="ov-chart"
+            role="img"
+            aria-label="Balkendiagramm der blockierten Anfragen"
+          ></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Anzeigemodus</h2>
+          <p class="card__hint">
+            Der einfache Modus steuert alles über eine Schutzstufe. Der Expertenmodus zeigt jede
+            Filterkategorie einzeln.
+          </p>
+          <div class="mode-picker" id="mode-picker">
+            <button type="button" data-mode="simple">Einfach</button>
+            <button type="button" data-mode="expert">Experte</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Darstellung</h2>
+          <div class="setting-row">
+            <label for="theme-select">Farbschema</label>
+            <select class="input" id="theme-select">
+              <option value="system">Wie das System</option>
+              <option value="dark">Immer dunkel</option>
+              <option value="light">Immer hell</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <label for="badge-toggle">Zahl am Symbol anzeigen</label>
+            <span class="switch">
+              <input type="checkbox" id="badge-toggle" />
+              <span class="switch__track"></span>
+            </span>
+          </div>
+          <div class="setting-row">
+            <label for="motion-toggle">Bewegung reduzieren</label>
+            <span class="switch">
+              <input type="checkbox" id="motion-toggle" />
+              <span class="switch__track"></span>
+            </span>
+          </div>
+          <div class="setting-row">
+            <label for="notify-toggle">Benachrichtigung bei Meilensteinen</label>
+            <span class="switch">
+              <input type="checkbox" id="notify-toggle" />
+              <span class="switch__track"></span>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Filter ===== -->
+      <section class="page" id="page-filters" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Filter</h1>
+          <p>Welche Arten von Anfragen blockiert werden sollen.</p>
+        </header>
+
+        <div class="card" id="level-card">
+          <h2 class="card__title">Schutzstufe</h2>
+          <p class="card__hint" id="level-hint">–</p>
+          <div class="level-buttons" id="level-buttons"></div>
+        </div>
+
+        <div id="filters-list"></div>
+
+        <div class="card">
+          <h2 class="card__title">Cosmetic-Filter</h2>
+          <p class="card__hint">
+            Blendet Werbeflächen aus, die nach dem Blockieren als leerer Kasten zurückbleiben.
+          </p>
+          <div class="setting-row">
+            <label for="cosmetic-toggle">Aktiv</label>
+            <span class="switch">
+              <input type="checkbox" id="cosmetic-toggle" />
+              <span class="switch__track"></span>
+            </span>
+          </div>
+          <div class="setting-row">
+            <label for="antiadblock-toggle">
+              Adblock-Erkennung entschärfen
+              <small>Verhindert Hinweisfenster, die zum Abschalten auffordern.</small>
+            </label>
+            <span class="switch">
+              <input type="checkbox" id="antiadblock-toggle" />
+              <span class="switch__track"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Eigene Regeln</h2>
+          <p class="card__hint">
+            Muster im declarativeNetRequest-Format, zum Beispiel
+            <code>||werbenetzwerk.example^</code>.
+          </p>
+          <form class="inline-form" id="custom-form">
+            <input
+              class="input input--mono"
+              id="custom-input"
+              type="text"
+              placeholder="||beispiel.test^"
+              aria-label="Eigene Regel"
+            />
+            <button class="btn btn--primary" type="submit">Hinzufügen</button>
+          </form>
+          <ul class="entry-list" id="custom-list"></ul>
+        </div>
+      </section>
+
+      <!-- ===== Filterlisten ===== -->
+      <section class="page" id="page-lists" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Filterlisten</h1>
+          <p>
+            Gepflegte Listen aus der Community. Sie werden heruntergeladen und lokal in Regeln
+            übersetzt — es wird kein fremder Code ausgeführt.
+          </p>
+        </header>
+
+        <div class="notice" id="lists-budget"></div>
+        <div id="lists-container"></div>
+
+        <div class="card">
+          <button class="btn" type="button" id="update-all">
+            Alle aktiven Listen aktualisieren
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Ausnahmen ===== -->
+      <section class="page" id="page-exceptions" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Ausnahmen</h1>
+          <p>Auf diesen Websites blockiert pBlock nichts. Subdomains sind eingeschlossen.</p>
+        </header>
+
+        <div class="card">
+          <form class="inline-form" id="whitelist-form">
+            <input
+              class="input"
+              id="whitelist-input"
+              type="text"
+              placeholder="beispiel.de"
+              aria-label="Website freigeben"
+            />
+            <button class="btn btn--primary" type="submit">Freigeben</button>
+          </form>
+          <p class="card__hint" id="whitelist-count">–</p>
+          <ul class="entry-list" id="whitelist-list"></ul>
+        </div>
+      </section>
+
+      <!-- ===== Ausgeblendete Elemente ===== -->
+      <section class="page" id="page-elements" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Ausgeblendete Elemente</h1>
+          <p>Mit dem Element-Picker versteckte Bereiche.</p>
+        </header>
+
+        <div class="card">
+          <div class="toolbar">
+            <div class="filter-chips" id="element-filters" role="group" aria-label="Filter">
+              <button type="button" data-filter="all" aria-pressed="true">Alle</button>
+              <button type="button" data-filter="global" aria-pressed="false">Überall</button>
+              <button type="button" data-filter="site" aria-pressed="false">
+                Seitenspezifisch
+              </button>
+            </div>
+            <button class="btn btn--danger btn--sm" type="button" id="clear-elements">
+              Alle entfernen
+            </button>
+          </div>
+          <ul class="entry-list" id="elements-list"></ul>
+        </div>
+      </section>
+
+      <!-- ===== Statistik ===== -->
+      <section class="page" id="page-stats" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Statistik</h1>
+          <p>Alle Werte liegen ausschließlich auf diesem Gerät.</p>
+        </header>
+
+        <div class="two-col">
+          <div class="card">
+            <h2 class="card__title">Am häufigsten blockiert</h2>
+            <ul class="entry-list" id="top-domains"></ul>
+          </div>
+          <div class="card">
+            <h2 class="card__title">Seiten mit den meisten Treffern</h2>
+            <ul class="entry-list" id="top-sites"></ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Zurücksetzen</h2>
+          <p class="card__hint">Löscht alle Zähler. Einstellungen bleiben erhalten.</p>
+          <button class="btn btn--danger" type="button" id="reset-stats">
+            Statistik zurücksetzen
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Diagnose ===== -->
+      <section class="page" id="page-diagnostics" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Diagnose</h1>
+          <p>Prüfen, ob alles läuft — und einem Fehlerbericht etwas Belastbares beilegen.</p>
+        </header>
+
+        <div class="card">
+          <h2 class="card__title">Selbsttest</h2>
+          <p class="card__hint">Prüft Regeln, Speicher und Filterlisten in wenigen Sekunden.</p>
+          <button class="btn btn--primary" type="button" id="run-selftest">
+            Selbsttest starten
+          </button>
+          <ul class="check-list" id="selftest-results"></ul>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Zustand</h2>
+          <dl class="kv" id="diagnostics-kv"></dl>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Protokoll</h2>
+          <div class="setting-row">
+            <label for="log-level">Ausführlichkeit</label>
+            <select class="input" id="log-level">
+              <option value="silent">Aus</option>
+              <option value="error">Nur Fehler</option>
+              <option value="warn">Fehler und Warnungen</option>
+              <option value="info">Zusätzlich Hinweise</option>
+              <option value="debug">Alles (ausführlich)</option>
+            </select>
+          </div>
+          <p class="card__hint">
+            Höhere Stufen helfen beim Eingrenzen eines Problems und kosten etwas Leistung.
+          </p>
+          <button class="btn" type="button" id="export-diagnostics">
+            Diagnosebericht herunterladen
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Sicherung ===== -->
+      <section class="page" id="page-backup" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Sicherung</h1>
+          <p>
+            Einstellungen sichern oder auf ein anderes Gerät übertragen. pBlock nutzt bewusst keine
+            Browser-Synchronisation — deren Speicherlimit ist zu knapp und würde Einträge
+            stillschweigend verwerfen.
+          </p>
+        </header>
+
+        <div class="card">
+          <h2 class="card__title">Exportieren</h2>
+          <p class="card__hint">
+            Schreibt Schutzstufe, Kategorien, Ausnahmen, eigene Regeln und ausgeblendete Elemente in
+            eine JSON-Datei.
+          </p>
+          <button class="btn btn--primary" type="button" id="export-settings">
+            Einstellungen exportieren
+          </button>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Importieren</h2>
+          <p class="card__hint">
+            Ersetzt die aktuellen Einstellungen. Sicherungen aus Version 4 werden erkannt und
+            umgewandelt.
+          </p>
+          <input type="file" id="import-file" accept="application/json,.json" hidden />
+          <button class="btn" type="button" id="import-settings">Datei auswählen …</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Zurücksetzen</h2>
+          <p class="card__hint">
+            Setzt alle Einstellungen auf den Auslieferungszustand. Ausnahmen, eigene Regeln und
+            ausgeblendete Elemente gehen dabei verloren.
+          </p>
+          <button class="btn btn--danger" type="button" id="reset-settings">
+            Auf Standard zurücksetzen
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== Über ===== -->
+      <section class="page" id="page-about" role="tabpanel" hidden>
+        <header class="page__head">
+          <h1>Über pBlock</h1>
+          <p>Quelloffener Werbe- und Trackerblocker für Chrome.</p>
+        </header>
+
+        <div class="card">
+          <h2 class="card__title">Datenschutz</h2>
+          <p class="card__hint">
+            pBlock erhebt keine personenbezogenen Daten, zeichnet keinen Verlauf auf und überträgt
+            nichts an einen Server. Die einzigen ausgehenden Verbindungen sind die von dir aktiv
+            eingeschalteten Filterlisten — und auch dabei wird nur eine öffentliche Textdatei
+            geladen, ohne Cookies und ohne Kennung.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Tastenkürzel</h2>
+          <dl class="kv">
+            <dt>Schutz ein- oder ausschalten</dt>
+            <dd><kbd>Alt</kbd> + <kbd>Umschalt</kbd> + <kbd>B</kbd></dd>
+            <dt>Seite pausieren oder fortsetzen</dt>
+            <dd><kbd>Alt</kbd> + <kbd>Umschalt</kbd> + <kbd>P</kbd></dd>
+            <dt>Element-Picker starten</dt>
+            <dd><kbd>Alt</kbd> + <kbd>Umschalt</kbd> + <kbd>E</kbd></dd>
+          </dl>
+          <p class="card__hint">
+            Anpassen lassen sich die Kürzel unter <code>chrome://extensions/shortcuts</code>.
+          </p>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Projekt</h2>
+          <ul class="link-list">
+            <li>
+              <a
+                href="https://github.com/philppplik/pBlock"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Quellcode auf GitHub
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://github.com/philppplik/pBlock/issues/new/choose"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Fehler melden
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://philppplik.github.io/pBlock/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Projektseite
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://philppplik.github.io/pBlock/datenschutz.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Datenschutzerklärung und Impressum
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2 class="card__title">Danksagung</h2>
+          <p class="card__hint">
+            Die mitgelieferten Filterdaten basieren auf der Arbeit der Betreuer von EasyList,
+            EasyPrivacy, Peter Lowe und dem URLhaus-Projekt. Die Lizenzen der einzelnen Listen sind
+            in <code>CREDITS.md</code> aufgeführt.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>
