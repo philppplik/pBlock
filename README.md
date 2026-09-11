@@ -1,155 +1,167 @@
 <p align="center">
-  <img src="images/pBlock-icon+schriftLogo.png" alt="pBlock Logo" width="280">
+  <img src="images/pBlock-icon+schriftLogo.png" alt="pBlock" width="260">
 </p>
 
 <p align="center">
-  <strong>Open Source Ad Blocker for Chrome</strong><br>
-  Block ads, trackers, and social media with a 3-level filter system
+  <strong>Werbeblocker für Chrome. Quelloffen, ohne Datensammlung.</strong><br>
+  Blockiert Werbung, Tracker und bekannte Schadsoftware-Domains — mit drei Schutzstufen und einem Element-Picker.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Manifest-V3-blue" alt="Manifest V3">
-  <img src="https://img.shields.io/badge/version-3.0.2-red" alt="Version">
-  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
-  <img src="https://img.shields.io/badge/privacy-zero%20data%20collection-brightgreen" alt="Privacy">
+  <a href="https://github.com/philppplik/pBlock/actions/workflows/ci.yml">
+    <img src="https://github.com/philppplik/pBlock/actions/workflows/ci.yml/badge.svg" alt="CI-Status">
+  </a>
+  <img src="https://img.shields.io/badge/Manifest-V3-3E9EFF" alt="Manifest V3">
+  <img src="https://img.shields.io/badge/Chrome-111%2B-3E9EFF" alt="Chrome 111 oder neuer">
+  <img src="https://img.shields.io/badge/Lizenz-MIT-3FB950" alt="MIT-Lizenz">
+  <img src="https://img.shields.io/badge/Datensammlung-keine-3FB950" alt="Keine Datensammlung">
+</p>
+
+<p align="center">
+  <a href="https://philppplik.github.io/pBlock/">Projektseite</a> ·
+  <a href="docs/architektur.md">Architektur</a> ·
+  <a href="docs/fehlerbehebung.md">Fehlerbehebung</a> ·
+  <a href="CONTRIBUTING.md">Mitwirken</a>
 </p>
 
 ---
 
-## Features
+## Was pBlock macht
 
-- **3-Level Filter System** — Simple mode with slider (Off to Max) or Expert mode with granular category control
-- **Element Picker** — Click any element on a page to block it permanently
-- **Cosmetic Filters** — Hide ad containers and banners via CSS injection
-- **Per-Site Statistics** — Track blocked requests per domain
-- **Filter Presets** — EasyList, EasyPrivacy, AdGuard Base, Peter Lowe's, URLhaus Malware
-- **Whitelist Management** — Exclude trusted sites from blocking
-- **Real-time Stats** — Live counter with animated badge updates
-- **Export/Import** — Backup and restore your settings as JSON
-- **100% Local** — No data leaves your device, no remote code
+Es blockiert Netzwerkanfragen an bekannte Werbe-, Tracking- und
+Schadsoftware-Domains, bevor sie überhaupt hinausgehen, und blendet die leeren
+Flächen aus, die davon zurückbleiben. Das war es im Kern.
 
-## Screenshots
+Was es **nicht** macht: Es sammelt keine Daten, überträgt nichts an einen Server,
+führt keinen nachgeladenen Code aus und pflegt keine Liste bezahlter Ausnahmen.
 
-<p align="center">
-  <img src="images/screenshota/sc0.png" alt="pBlock Popup" width="320">
-  <img src="images/screenshota/sc1.png" alt="pBlock Settings" width="320">
-</p>
+## Funktionen
 
-<p align="center">
-  <img src="images/screenshota/sc2.png" alt="pBlock Statistics" width="320">
-  <img src="images/screenshota/sc3.png" alt="pBlock Filter" width="320">
-</p>
+|                         |                                                                                                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Drei Schutzstufen**   | Ein Regler von „Minimal“ bis „Maximum“. Wer mehr Kontrolle will, schaltet in den Expertenmodus und steuert jede Kategorie und Unterkategorie einzeln. |
+| **Element-Picker**      | Störendes anklicken und dauerhaft ausblenden. Zeigt vorher, wie viele Elemente betroffen wären, und warnt bei zu breiten Selektoren.                  |
+| **Filterlisten**        | EasyList, EasyPrivacy, EasyList Germany, Peter Lowe und URLhaus lassen sich zuschalten. Sie werden heruntergeladen und lokal in Regeln übersetzt.     |
+| **Ausnahmen pro Seite** | Ein Klick nimmt eine Website vom Blockieren aus, inklusive aller Subdomains.                                                                          |
+| **Statistik**           | Blockierte Anfragen nach Tag, Stunde und Kategorie. Ausschließlich lokal, jederzeit löschbar.                                                         |
+| **Diagnose**            | Selbsttest für Regeln, Speicher und Filterlisten. Herunterladbarer Bericht für Fehlermeldungen — ohne besuchte Adressen.                              |
+| **Tastenkürzel**        | Schutz umschalten, Seite pausieren, Element-Picker starten.                                                                                           |
 
 ## Installation
 
-### From Chrome Web Store
+### Aus dem Chrome Web Store
 
-*Coming soon...*
+[pBlock im Chrome Web Store](https://chromewebstore.google.com/detail/amcmnaimcdhjfdpbcgbiaffjgneebona)
 
-### Manual Installation (Developer Mode)
+Die dort veröffentlichte Fassung kann hinter dem Stand auf GitHub liegen, solange
+die Prüfung durch Google läuft.
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/philppplik/pBlock.git
-   ```
-2. Open Chrome and go to `chrome://extensions/`
-3. Enable **Developer mode** (top right toggle)
-4. Click **Load unpacked** and select the cloned folder
+### Aus dem Quellcode
 
-## Filter Categories
+Voraussetzung: Node.js 20 oder neuer.
 
-| Category | Description | Examples |
-|----------|-------------|----------|
-| **Ads** | Display ads, popups, video ads | Google Ads, Taboola, Outbrain |
-| **Trackers** | Analytics & tracking scripts | Google Analytics, Hotjar, Mixpanel |
-| **Social** | Social media widgets & buttons | Facebook Pixel, Twitter, LinkedIn |
-| **Annoyances** | Cookie banners, ad overlays | Content recommendation, ad measurement |
-| **OEM** | Manufacturer tracking | Samsung, Xiaomi, Huawei, Apple |
-
-## Protection Levels
-
-| Level | Slider | Description |
-|-------|--------|-------------|
-| Off | 0% | No blocking |
-| Minimal | 25% | Only ads |
-| Standard | 50% | Ads + trackers |
-| High | 75% | Ads + trackers + social |
-| Maximum | 100% | All categories enabled |
-
-## Privacy
-
-pBlock collects **zero user data**. All processing happens locally on your device.
-
-- No personal data collected
-- No browsing history tracked
-- No data sent to external servers
-- No remote code loaded
-- All filter lists bundled locally
-
-Read the full [Privacy Policy](https://pblock.philipp-paulik.de/privacy).
-
-## Links
-
-- **Website:** [pblock.philipp-paulik.de](https://pblock.philipp-paulik.de)
-- **Privacy Policy:** [pblock.philipp-paulik.de/privacy](https://pblock.philipp-paulik.de/privacy)
-- **Imprint:** [pblock.philipp-paulik.de/impressum](https://pblock.philipp-paulik.de/impressum)
-
-## Tech Stack
-
-- **Manifest V3** — Chrome Extension standard
-- **Service Worker** — Background processing
-- **declarativeNetRequest** — MV3-compliant network blocking
-- **MutationObserver** — Dynamic DOM content monitoring
-- **Chrome Storage API** — Local settings & statistics
-- **Iconify** — Icon system (MDI preset, bundled locally)
-
-## Development
-
-### Project Structure
-
-```
-pBlock/
-├── manifest.json          # Extension manifest (MV3)
-├── background.js          # Service worker
-├── popup.html / .js       # Extension popup UI
-├── options.html / .js     # Settings page
-├── privacy.html           # Privacy policy
-├── wizard.html / .js      # First-run setup wizard
-├── css/
-│   └── common.css         # Shared styles
-├── js/
-│   ├── storage.js         # Storage manager
-│   ├── rules.js           # Filter rule engine
-│   ├── statistics.js      # Stats tracking
-│   ├── cosmetic-filter.js # CSS hide rules
-│   ├── cosmetic-injector.js # Content script
-│   ├── element-picker.js  # Visual element picker
-│   ├── presets.js         # Filter list manager
-│   ├── site-stats.js      # Per-site statistics
-│   ├── notifications.js   # Notification system
-│   └── vendor/
-│       └── iconify-icon.min.js
-├── icons/                 # Extension icons
-└── images/                # Logos & screenshots
+```bash
+git clone https://github.com/philppplik/pBlock.git
+cd pBlock
+npm install
+npm run build
 ```
 
-## Credits
+Danach in Chrome:
 
-- **[Toolz/d3Host](https://github.com/Turtlecute33/toolz)** — Host lists for ads, analytics, social trackers (CC BY-NC-SA 4.0)
-- **[Iconify](https://iconify.design/)** — Icon framework (MIT)
+1. `chrome://extensions` öffnen
+2. Entwicklermodus einschalten
+3. „Entpackte Erweiterung laden“ und den Ordner **`dist/`** auswählen
 
-## License
+## Schutzstufen
 
-MIT License — see [LICENSE](LICENSE) for details.
+| Stufe        | Was blockiert wird                        | Wann sie passt                                      |
+| ------------ | ----------------------------------------- | --------------------------------------------------- |
+| **Aus**      | nichts                                    | Zum kurzen Gegentesten                              |
+| **Minimal**  | Werbung, Schadsoftware                    | Wenn viele empfindliche Seiten im Spiel sind        |
+| **Standard** | zusätzlich Tracker                        | Für den Alltag empfohlen                            |
+| **Hoch**     | zusätzlich Social Media, störende Widgets | Wenn einzelne Ausnahmen in Ordnung sind             |
+| **Maximum**  | zusätzlich Hersteller-Telemetrie          | Wenn Gründlichkeit wichtiger ist als Bequemlichkeit |
 
-## Developer
+Die Stufe steuert nur die Kategorien. Feineinstellungen auf Unterkategorie-Ebene
+bleiben erhalten, wenn man den Regler bewegt.
 
-**Philipp Paulik**
-- Website: [philipp-paulik.de](https://philipp-paulik.de)
-- Email: philipp.l.paulik@gmail.com
+## Privatsphäre
 
----
+pBlock erhebt **keine** personenbezogenen Daten.
 
-<p align="center">
-  Made with ❤️ in Germany
-</p>
+- Kein Analyse-Dienst, keine Kennung, kein Zähler.
+- Kein aufgezeichneter Verlauf. Die Statistik zählt Treffer, nicht Seitenaufrufe.
+- Keine Übertragung an einen Server des Anbieters — es gibt keinen.
+- Die einzigen ausgehenden Verbindungen sind Filterlisten, die du selbst
+  einschaltest. Dabei wird eine öffentliche Textdatei geladen, ohne Cookies und
+  ohne Kennung.
+
+Vollständig in der [Datenschutzerklärung](https://philppplik.github.io/pBlock/datenschutz.html).
+
+## Technik
+
+- **Manifest V3** mit `declarativeNetRequest` — die Erweiterung hinterlegt Regeln
+  und bekommt die Anfragen selbst nie zu sehen.
+- **Gebündelte Domains:** Statt einer Regel pro Domain fasst pBlock ganze Listen
+  über `requestDomains` zusammen. Aus rund 200 Einzelregeln werden unter 20.
+- **Keine dynamische Codeausführung.** Kein `eval`, kein `new Function`, kein
+  nachgeladenes Skript. Der Build bricht ab, wenn so etwas ins Paket gerät.
+- **`world: MAIN`** für den Eingriff in die Seitenumgebung — als statische Datei
+  im Paket, nicht als übergebener Quelltext.
+- **Keine Fremdbibliothek zur Laufzeit.** Alles, was ausgeliefert wird, steht in
+  diesem Repository.
+
+Ausführlich in [`docs/architektur.md`](docs/architektur.md).
+
+## Entwicklung
+
+```bash
+npm run build          # nach dist/ bauen
+npm run build:watch    # bei Änderungen neu bauen
+npm test               # Tests
+npm run test:coverage  # Tests mit Abdeckungsbericht
+npm run lint           # ESLint
+npm run verify         # alles zusammen — läuft so auch in der CI
+```
+
+Aufbau:
+
+```
+src/core/         Plattformneutrale Logik. Kein chrome, kein DOM. Vollständig getestet.
+src/background/   Service Worker
+src/content/      Content-Scripts
+src/ui/           Popup, Einstellungen, Einrichtung
+tests/            Vitest-Tests
+website/          Projektseite (GitHub Pages)
+docs/             Dokumentation
+```
+
+Details in [`CONTRIBUTING.md`](CONTRIBUTING.md) und
+[`docs/entwicklung.md`](docs/entwicklung.md).
+
+## Dokumentation
+
+| Dokument                                          | Inhalt                                                                                  |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Architektur](docs/architektur.md)                | Aufbau, Datenfluss, die wichtigsten Entscheidungen und ihre Begründung                  |
+| [Entwicklung](docs/entwicklung.md)                | Einrichtung, Build, Tests, Veröffentlichung                                             |
+| [Filter](docs/filter.md)                          | Wie Regeln entstehen, wie Filterlisten geparst werden, was bewusst nicht blockiert wird |
+| [Fehlerbehebung](docs/fehlerbehebung.md)          | Wenn etwas nicht funktioniert                                                           |
+| [Qualitätssicherung](docs/qualitaetssicherung.md) | Testabdeckung und manuelle Prüfliste vor jedem Release                                  |
+| [Changelog](CHANGELOG.md)                         | Was sich wann geändert hat                                                              |
+| [Sicherheit](SECURITY.md)                         | Lücken melden                                                                           |
+| [Danksagung](CREDITS.md)                          | Filterquellen und Lizenzen Dritter                                                      |
+
+## Etwas funktioniert nicht?
+
+- [Fehlerbehebung durchgehen](docs/fehlerbehebung.md)
+- [Issue eröffnen](https://github.com/philppplik/pBlock/issues/new/choose) — am
+  besten mit dem Diagnosebericht aus den Einstellungen
+- Sicherheitslücken bitte **nicht** öffentlich: siehe [SECURITY.md](SECURITY.md)
+
+## Lizenz
+
+[MIT](LICENSE) — Philipp Paulik
+
+Filterquellen und Lizenzen Dritter in [CREDITS.md](CREDITS.md).

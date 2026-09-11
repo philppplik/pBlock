@@ -1,0 +1,16 @@
+# Standardmäßig prüft der Projektinhaber jede Änderung.
+*                       @philppplik
+
+# Besonders heikle Bereiche, ausdrücklich hervorgehoben:
+
+# Berechtigungen und Sicherheitsrichtlinie der Erweiterung.
+/src/manifest.json      @philppplik
+
+# Greift in fremde Seiten ein — Fehler hier beschädigen Websites.
+/src/content/           @philppplik
+
+# Bestimmt, was tatsächlich blockiert wird.
+/src/core/rule-*.js     @philppplik
+
+# Automatisierung mit Schreibrechten.
+/.github/workflows/     @philppplik

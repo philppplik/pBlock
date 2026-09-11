@@ -1,0 +1,71 @@
+name: Fehler in pBlock
+description: Die Erweiterung selbst verhält sich falsch — Zähler, Einstellungen, Oberfläche, Element-Picker.
+title: '[Fehler] '
+labels: ['fehler']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Für Probleme mit einer bestimmten Website gibt es eine eigene Vorlage.
+        Hier geht es um Fehlverhalten der Erweiterung selbst.
+
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: Was geht schief?
+    validations:
+      required: true
+
+  - type: textarea
+    id: schritte
+    attributes:
+      label: Schritte zum Nachstellen
+      placeholder: |
+        1. Einstellungen öffnen
+        2. Auf „Filterlisten“ wechseln
+        3. EasyList einschalten
+        4. Die Regelzahl bleibt bei 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Was hättest du stattdessen erwartet?
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: pBlock-Version
+      description: Steht unten links in den Einstellungen.
+      placeholder: '5.0.0'
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser und Version
+      placeholder: 'Chrome 142 unter Windows 11'
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnose
+    attributes:
+      label: Diagnosebericht
+      description: |
+        Einstellungen → Diagnose → „Selbsttest starten“, danach
+        „Diagnosebericht herunterladen“ und den Inhalt hier einfügen.
+      render: text
+
+  - type: textarea
+    id: konsole
+    attributes:
+      label: Fehler aus der Konsole (optional)
+      description: |
+        `chrome://extensions` öffnen, bei pBlock auf „Dienst-Worker“ klicken und
+        rote Meldungen aus der Konsole hier einfügen.
+      render: text

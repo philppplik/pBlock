@@ -1,0 +1,33 @@
+version: 2
+
+updates:
+  # Entwicklungsabhängigkeiten. Die Erweiterung selbst liefert keine
+  # Fremdbibliothek aus — alles hier ist reines Werkzeug für Build und Tests.
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: 'chore(deps)'
+    labels:
+      - abhängigkeiten
+    groups:
+      # Patch- und Minor-Updates gesammelt, damit nicht jede Woche fünf
+      # einzelne Pull Requests aufschlagen.
+      entwicklungswerkzeuge:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+
+  # Die Actions in den Workflows.
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: 'chore(ci)'
+    labels:
+      - ci

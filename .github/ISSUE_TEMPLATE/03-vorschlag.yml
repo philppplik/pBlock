@@ -1,0 +1,42 @@
+name: Vorschlag
+description: Eine Idee für eine neue Funktion oder eine Verbesserung.
+title: '[Vorschlag] '
+labels: ['vorschlag']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        pBlock soll bewusst überschaubar bleiben. Vorschläge sind willkommen, werden
+        aber daran gemessen, ob sie für viele Nutzer einen spürbaren Unterschied machen
+        — und ob sie ohne zusätzliche Berechtigungen auskommen.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Welches Problem soll gelöst werden?
+      description: Bitte das Problem beschreiben, nicht bereits die Lösung.
+      placeholder: |
+        Ich muss auf Arbeitsseiten regelmäßig pausieren und vergesse dann,
+        den Schutz wieder einzuschalten.
+    validations:
+      required: true
+
+  - type: textarea
+    id: idee
+    attributes:
+      label: Wie könnte das aussehen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternativen
+    attributes:
+      label: Was hast du stattdessen versucht?
+
+  - type: checkboxes
+    id: umfang
+    attributes:
+      label: Einordnung
+      options:
+        - label: Der Vorschlag kommt ohne zusätzliche Browser-Berechtigungen aus.
+        - label: Der Vorschlag erfordert keine Datenübertragung an einen Server.

@@ -1,0 +1,91 @@
+name: CI
+
+# Läuft bei jedem Push auf main und bei jedem Pull Request.
+# Ziel: Kein Zustand erreicht main, der sich nicht bauen, prüfen und testen lässt.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Ein laufender Durchlauf wird abgebrochen, wenn ein neuer Commit nachkommt.
+# Spart Minuten und liefert schneller ein Ergebnis zum aktuellen Stand.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint, Format und Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Quellcode auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        # `npm ci` statt `npm install`: reproduzierbar und bricht ab, wenn
+        # package-lock.json nicht zur package.json passt.
+        run: npm ci
+
+      - name: Lint
+        # Warnungen sind hier bewusst erlaubt, Fehler nicht.
+        run: npm run lint
+
+      - name: Formatierung prüfen
+        run: npm run format:check
+
+      - name: Tests mit Coverage
+        # Die Schwelle von 80 % steht in vitest.config.js; Unterschreitung
+        # lässt diesen Schritt fehlschlagen.
+        run: npm run test:coverage
+
+      - name: Coverage-Bericht sichern
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
+
+  build:
+    name: Build und Manifest-Prüfung
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Quellcode auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Erweiterung bauen
+        run: npm run build
+
+      - name: Manifest und Paket prüfen
+        # Verhindert unter anderem, dass dynamische Codeausführung ins Paket gerät.
+        run: npm run validate:manifest
+
+      - name: Gebautes Paket sichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: pblock-unpacked
+          path: dist/
+          retention-days: 14

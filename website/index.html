@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pBlock — Werbeblocker für Chrome, quelloffen und ohne Datensammlung</title>
+
+    <meta
+      name="description"
+      content="pBlock blockiert Werbung, Tracker und Schadsoftware-Domains in Chrome. Quelloffen, Manifest V3, ohne Datensammlung. Drei Schutzstufen und ein Element-Picker."
+    />
+    <link rel="canonical" href="https://philppplik.github.io/pBlock/" />
+    <meta name="theme-color" content="#141619" />
+
+    <!-- Vorschau beim Teilen -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="pBlock — Werbeblocker für Chrome" />
+    <meta
+      property="og:description"
+      content="Blockiert Werbung, Tracker und Schadsoftware. Quelloffen, ohne Datensammlung, Manifest V3."
+    />
+    <meta property="og:url" content="https://philppplik.github.io/pBlock/" />
+    <meta
+      property="og:image"
+      content="https://philppplik.github.io/pBlock/assets/logo-wortmarke.png"
+    />
+    <meta property="og:locale" content="de_DE" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="assets/icon.png" type="image/png" />
+    <link rel="stylesheet" href="assets/site.css" />
+
+    <!--
+      Strukturierte Daten. Hilft Suchmaschinen, die Seite als Software-Anwendung
+      statt als Blogbeitrag einzuordnen.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "pBlock",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome 111+",
+        "description": "Quelloffener Werbe- und Trackerblocker für Chrome auf Basis von Manifest V3.",
+        "license": "https://github.com/philppplik/pBlock/blob/main/LICENSE",
+        "codeRepository": "https://github.com/philppplik/pBlock",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "author": { "@type": "Person", "name": "Philipp Paulik" }
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+    <header class="site-header">
+      <a class="logo" href="./" aria-label="pBlock Startseite">
+        <img src="assets/logo-wortmarke.svg" alt="pBlock" width="120" height="28" />
+      </a>
+
+      <nav aria-label="Hauptnavigation">
+        <a href="#funktionen">Funktionen</a>
+        <a href="#privatsphaere">Privatsphäre</a>
+        <a href="#installation">Installation</a>
+        <a href="https://github.com/philppplik/pBlock" rel="noopener">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="inhalt">
+      <!-- ===== Aufmacher ===== -->
+      <section class="hero">
+        <p class="eyebrow">Quelloffen · Manifest V3 · Ohne Datensammlung</p>
+
+        <h1>
+          Das Web,<br />
+          <em>ohne Zwischenrufe.</em>
+        </h1>
+
+        <p class="lede">
+          pBlock blockiert Werbung, Tracker und bekannte Schadsoftware-Domains, bevor sie geladen
+          werden. Alles läuft auf deinem Gerät. Nichts wird übertragen, nichts ausgewertet.
+        </p>
+
+        <div class="hero__actions">
+          <a class="button button--primary" href="#installation">Installieren</a>
+          <a class="button" href="https://github.com/philppplik/pBlock" rel="noopener">
+            Quellcode ansehen
+          </a>
+        </div>
+
+        <!--
+          Bewusst kein Werbeversprechen wie „4× schneller“: Solche Zahlen sind ohne
+          Messmethode wertlos. Was hier steht, lässt sich im Quellcode nachprüfen.
+        -->
+        <dl class="hero__facts">
+          <div>
+            <dt>Datenübertragung</dt>
+            <dd>keine</dd>
+          </div>
+          <div>
+            <dt>Fremdcode zur Laufzeit</dt>
+            <dd>keiner</dd>
+          </div>
+          <div>
+            <dt>Lizenz</dt>
+            <dd>MIT</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- ===== Funktionen ===== -->
+      <section id="funktionen" class="section">
+        <h2 class="section__title">Was pBlock kann</h2>
+
+        <div class="grid">
+          <article class="card card--wide">
+            <h3>Drei Stufen statt hundert Schalter</h3>
+            <p>
+              Ein Regler von „Minimal“ bis „Maximum“ regelt alles. Wer es genauer will, schaltet in
+              den Expertenmodus und steuert jede Filterkategorie und Unterkategorie einzeln.
+            </p>
+            <ul class="chips">
+              <li>Werbung</li>
+              <li>Tracker</li>
+              <li>Social Media</li>
+              <li>Störendes</li>
+              <li>Schadsoftware</li>
+              <li>Hersteller-Telemetrie</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Element-Picker</h3>
+            <p>
+              Etwas stört, das kein Filter erfasst? Rechtsklick, anklicken, weg — dauerhaft, auch
+              beim nächsten Besuch. pBlock zeigt vorher, wie viele Elemente betroffen wären.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Filterlisten</h3>
+            <p>
+              EasyList, EasyPrivacy, EasyList Germany, Peter Lowe und URLhaus lassen sich
+              zuschalten. Sie werden heruntergeladen und lokal in Regeln übersetzt.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Ausnahmen pro Seite</h3>
+            <p>
+              Eine Seite funktioniert nicht? Ein Klick im Popup nimmt sie aus — inklusive aller
+              Subdomains, ohne den Schutz überall abzuschalten.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Diagnose eingebaut</h3>
+            <p>
+              Ein Selbsttest prüft Regeln, Speicher und Filterlisten. Der Bericht lässt sich
+              herunterladen und einer Fehlermeldung beilegen — ohne persönliche Daten.
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>Statistik, die bleibt wo sie ist</h3>
+            <p>
+              Blockierte Anfragen, Verlauf und Verteilung nach Kategorie. Gespeichert ausschließlich
+              lokal, jederzeit löschbar.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== Privatsphäre ===== -->
+      <section id="privatsphaere" class="section section--accent">
+        <h2 class="section__title">Was pBlock <em>nicht</em> tut</h2>
+
+        <ul class="negatives">
+          <li>
+            <strong>Keine Analyse.</strong> Es gibt keinen Analyse-Dienst, keine Kennung und keinen
+            Zähler — weder in der Erweiterung noch auf dieser Seite.
+          </li>
+          <li>
+            <strong>Kein Verlauf.</strong> Besuchte Adressen werden weder gespeichert noch
+            übertragen. Die Statistik zählt Treffer, nicht Seitenaufrufe.
+          </li>
+          <li>
+            <strong>Kein „akzeptable Werbung“.</strong> Es gibt keine Liste bezahlter Ausnahmen. Was
+            du blockierst, bleibt blockiert.
+          </li>
+          <li>
+            <strong>Kein nachgeladener Code.</strong> Filterlisten sind Textdateien. Sie werden
+            gelesen, nicht ausgeführt.
+          </li>
+        </ul>
+
+        <p class="section__note">
+          Nachprüfbar: Der vollständige Quellcode liegt offen, und die
+          <a href="https://github.com/philppplik/pBlock/blob/main/src/manifest.json" rel="noopener">
+            Berechtigungen im Manifest
+          </a>
+          sind auf das Nötigste beschränkt. Details in der
+          <a href="datenschutz.html">Datenschutzerklärung</a>.
+        </p>
+      </section>
+
+      <!-- ===== Installation ===== -->
+      <section id="installation" class="section">
+        <h2 class="section__title">Installieren</h2>
+
+        <div class="install">
+          <article class="install__option">
+            <h3>Aus dem Chrome Web Store</h3>
+            <p>Die bequemste Variante mit automatischen Updates.</p>
+            <a
+              class="button button--primary"
+              href="https://chromewebstore.google.com/detail/amcmnaimcdhjfdpbcgbiaffjgneebona"
+              rel="noopener"
+            >
+              Im Web Store öffnen
+            </a>
+            <p class="install__note">
+              Die dort veröffentlichte Fassung kann hinter dem Stand auf GitHub liegen, solange die
+              Prüfung durch Google läuft.
+            </p>
+          </article>
+
+          <article class="install__option">
+            <h3>Aus dem Quellcode</h3>
+            <p>Voraussetzung: Node.js 20 oder neuer.</p>
+            <pre><code>git clone https://github.com/philppplik/pBlock.git
+cd pBlock
+npm install
+npm run build</code></pre>
+            <p class="install__note">
+              Anschließend <code>chrome://extensions</code> öffnen, den Entwicklermodus einschalten,
+              „Entpackte Erweiterung laden“ wählen und den Ordner <code>dist/</code> auswählen.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== Mitmachen ===== -->
+      <section class="section section--quiet">
+        <h2 class="section__title">Etwas funktioniert nicht?</h2>
+        <p class="section__lede">
+          Fehlerberichte sind willkommen — besonders mit dem Diagnosebericht aus den Einstellungen.
+          Er enthält Regelzahlen und Protokolleinträge, aber keine besuchten Adressen.
+        </p>
+        <div class="hero__actions">
+          <a
+            class="button"
+            href="https://github.com/philppplik/pBlock/issues/new/choose"
+            rel="noopener"
+          >
+            Fehler melden
+          </a>
+          <a
+            class="button"
+            href="https://github.com/philppplik/pBlock/blob/main/CONTRIBUTING.md"
+            rel="noopener"
+          >
+            Mitwirken
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__brand">
+        <img src="assets/logo-marke.svg" alt="" width="24" height="24" />
+        <span>pBlock</span>
+      </div>
+
+      <nav aria-label="Fußzeile">
+        <a href="datenschutz.html">Datenschutz &amp; Impressum</a>
+        <a href="https://github.com/philppplik/pBlock" rel="noopener">GitHub</a>
+        <a href="https://github.com/philppplik/pBlock/blob/main/LICENSE" rel="noopener">Lizenz</a>
+      </nav>
+
+      <p class="site-footer__meta">
+        &copy; <span id="jahr">2026</span> Philipp Paulik · MIT-Lizenz
+      </p>
+    </footer>
+
+    <script>
+      // Einzige Zeile JavaScript auf dieser Seite. Kein Tracking, keine Bibliothek.
+      document.getElementById('jahr').textContent = String(new Date().getFullYear());
+    </script>
+  </body>
+</html>
