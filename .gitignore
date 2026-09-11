@@ -1,27 +1,30 @@
-# pBlock - Git Ignore
+# Abhängigkeiten
+node_modules/
 
-# Claude Code
-.claude/
-
-# OS files
-.DS_Store
-Thumbs.db
-Desktop.ini
-
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Chrome Extension Build (optional)
-*.pem
-*.crx
+# Build-Artefakte
+dist/
 *.zip
 
-# Debug
-*.log
+# Test- und Coverage-Artefakte
+coverage/
+.vitest/
 
-# Landing page (separate project)
-lp/
+# Website-Build
+website/dist/
+website/node_modules/
+website/.vite/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Lokale Umgebungsdateien
+.env
+.env.local
