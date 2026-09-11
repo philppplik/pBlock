@@ -57,7 +57,7 @@ jobs:
           exit $fehler
 
       - name: Pages einrichten
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Artefakt hochladen
         uses: actions/upload-pages-artifact@v3
