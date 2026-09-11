@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pBlock einrichten</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="onboarding.css" />
+  </head>
+
+  <body class="onboarding">
+    <main class="wizard" aria-labelledby="wizard-title">
+      <header class="wizard__head">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <p class="wizard__step" id="step-indicator" aria-live="polite">Schritt 1 von 3</p>
+      </header>
+
+      <!-- Schritt 1: Begrüßung -->
+      <section class="step step--active" data-step="1">
+        <h1 class="wizard__title" id="wizard-title">pBlock ist einsatzbereit.</h1>
+        <p class="wizard__lead">
+          Ab sofort werden Werbung, Tracker und bekannte Schadsoftware-Domains blockiert. Drei kurze
+          Fragen, dann passt die Einstellung zu deinem Surfverhalten.
+        </p>
+
+        <ul class="facts">
+          <li>
+            <strong>Keine Datensammlung.</strong> Alles läuft auf deinem Gerät. Es wird nichts
+            übertragen, nichts gespeichert, nichts ausgewertet.
+          </li>
+          <li>
+            <strong>Quelloffen.</strong> Der gesamte Code liegt öffentlich auf GitHub und kann
+            geprüft werden.
+          </li>
+          <li>
+            <strong>Umkehrbar.</strong> Jede Einstellung lässt sich jederzeit ändern oder
+            zurücksetzen.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Schritt 2: Schutzstufe -->
+      <section class="step" data-step="2" hidden>
+        <h1 class="wizard__title">Wie streng soll gefiltert werden?</h1>
+        <p class="wizard__lead">
+          Mehr Schutz bedeutet auch ein höheres Risiko, dass einzelne Seiten anders aussehen als
+          gewohnt. Du kannst das jederzeit anpassen.
+        </p>
+
+        <fieldset class="choices">
+          <legend class="visually-hidden">Schutzstufe</legend>
+
+          <label class="choice">
+            <input type="radio" name="level" value="25" />
+            <span class="choice__body">
+              <span class="choice__title">Minimal</span>
+              <span class="choice__desc">
+                Nur Werbung und Schadsoftware. Am verträglichsten, wenn du viele empfindliche Seiten
+                nutzt.
+              </span>
+            </span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="level" value="50" checked />
+            <span class="choice__body">
+              <span class="choice__title">
+                Standard
+                <span class="tag tag--accent">Empfohlen</span>
+              </span>
+              <span class="choice__desc">
+                Werbung, Schadsoftware und Tracker. Guter Kompromiss für den Alltag.
+              </span>
+            </span>
+          </label>
+
+          <label class="choice">
+            <input type="radio" name="level" value="75" />
+            <span class="choice__body">
+              <span class="choice__title">Hoch</span>
+              <span class="choice__desc">
+                Zusätzlich Social-Media-Tracking und störende Widgets. Vereinzelt brauchen Seiten
+                dann eine Ausnahme.
+              </span>
+            </span>
+          </label>
+        </fieldset>
+      </section>
+
+      <!-- Schritt 3: Bedienung -->
+      <section class="step" data-step="3" hidden>
+        <h1 class="wizard__title">Zwei Dinge, die gut zu wissen sind.</h1>
+
+        <div class="tips">
+          <article class="tip-card">
+            <h2>Eine Seite funktioniert nicht?</h2>
+            <p>
+              Klicke auf das pBlock-Symbol und schalte den Regler neben der Adresse um. Die Seite
+              wird dann vom Blockieren ausgenommen und neu geladen.
+            </p>
+            <p class="tip-card__shortcut">
+              Tastenkürzel: <kbd>Alt</kbd> + <kbd>Umschalt</kbd> + <kbd>P</kbd>
+            </p>
+          </article>
+
+          <article class="tip-card">
+            <h2>Etwas Störendes entdeckt?</h2>
+            <p>
+              Rechtsklick auf das Element und „Element auf dieser Seite blockieren“ wählen. pBlock
+              blendet es dauerhaft aus — auch beim nächsten Besuch.
+            </p>
+            <p class="tip-card__shortcut">
+              Tastenkürzel: <kbd>Alt</kbd> + <kbd>Umschalt</kbd> + <kbd>E</kbd>
+            </p>
+          </article>
+        </div>
+
+        <label class="choice choice--flat">
+          <input type="checkbox" id="expert-mode" />
+          <span class="choice__body">
+            <span class="choice__title">Expertenmodus einschalten</span>
+            <span class="choice__desc">
+              Zeigt statt des Reglers einzelne Schalter für jede Filterkategorie.
+            </span>
+          </span>
+        </label>
+      </section>
+
+      <footer class="wizard__foot">
+        <button type="button" class="btn btn--ghost" id="back" hidden>Zurück</button>
+        <span class="wizard__spacer"></span>
+        <button type="button" class="btn btn--primary" id="next">Weiter</button>
+      </footer>
+    </main>
+
+    <script src="onboarding.js"></script>
+  </body>
+</html>

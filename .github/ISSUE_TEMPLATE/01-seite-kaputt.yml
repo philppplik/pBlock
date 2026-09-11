@@ -1,0 +1,79 @@
+name: Website funktioniert nicht richtig
+description: Eine Seite lädt nicht, sieht kaputt aus oder eine Funktion fehlt, seit pBlock aktiv ist.
+title: '[Seite] '
+labels: ['seite-kaputt']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für die Meldung. Das ist die mit Abstand häufigste Art von Problem — und
+        die am leichtesten zu beheben, wenn ein paar Angaben dabei sind.
+
+        **Vorab zwei Dinge, die oft schon helfen:**
+        1. Im Popup den Regler neben der Adresse umlegen. Wird die Seite dann normal,
+           liegt es sicher an pBlock.
+        2. In den Einstellungen unter „Filter“ die Schutzstufe eine Stufe senken und
+           die Seite neu laden.
+
+  - type: input
+    id: adresse
+    attributes:
+      label: Betroffene Adresse
+      description: Die Seite, auf der es hakt. Keine Adressen, die persönliche Daten enthalten.
+      placeholder: https://beispiel.de/artikel
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Was passiert?
+      description: Beschreibe möglichst genau, was du siehst und was du stattdessen erwartest.
+      placeholder: |
+        Das Video im Artikel bleibt schwarz und der Abspielknopf reagiert nicht.
+        Ohne pBlock läuft es normal.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mit-pause
+    attributes:
+      label: Ist das Problem weg, wenn pBlock auf dieser Seite pausiert ist?
+      options:
+        - 'Ja — mit Pause funktioniert alles'
+        - 'Nein — es liegt also nicht an pBlock'
+        - 'Noch nicht ausprobiert'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stufe
+    attributes:
+      label: Eingestellte Schutzstufe
+      options: ['Minimal', 'Standard', 'Hoch', 'Maximum', 'Expertenmodus']
+    validations:
+      required: true
+
+  - type: textarea
+    id: listen
+    attributes:
+      label: Aktive Filterlisten
+      description: Zu finden unter Einstellungen → Filterlisten. „Keine“ ist eine gültige Antwort.
+      placeholder: EasyList, EasyPrivacy
+
+  - type: textarea
+    id: diagnose
+    attributes:
+      label: Diagnosebericht (optional, hilft aber sehr)
+      description: |
+        Einstellungen → Diagnose → „Diagnosebericht herunterladen“, dann den Inhalt hier einfügen.
+        Der Bericht enthält Regelzahlen und Protokolleinträge, **keine** besuchten Adressen.
+      render: text
+
+  - type: checkboxes
+    id: bestaetigung
+    attributes:
+      label: Vorab geprüft
+      options:
+        - label: Ich habe nachgesehen, ob dazu bereits ein Issue offen ist.
+          required: true

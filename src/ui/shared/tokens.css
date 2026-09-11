@@ -1,0 +1,165 @@
+/*
+ * Design-Tokens für pBlock.
+ *
+ * Gestalterische Richtung: ein Messinstrument, kein Dashboard-Baukasten.
+ * Wenige, kräftige Zahlen; viel Ruhe drumherum; genau ein Akzent, der für
+ * „blockiert“ steht. Das Rot stammt aus dem bestehenden Logo und wird bewusst
+ * sparsam eingesetzt — wenn alles rot ist, bedeutet Rot nichts mehr.
+ *
+ * Farben in OKLCH: gleiche Helligkeitsstufen wirken über alle Farbtöne hinweg
+ * tatsächlich gleich hell, was in Hex-Werten nicht gegeben ist.
+ */
+
+:root {
+  color-scheme: dark light;
+
+  /* --- Flächen: vier Ebenen, bewusst eng beieinander ------------------- */
+  --surface-base: oklch(17% 0.008 265);
+  --surface-raised: oklch(21% 0.009 265);
+  --surface-overlay: oklch(25% 0.01 265);
+  --surface-sunken: oklch(14% 0.008 265);
+
+  /* --- Linien ---------------------------------------------------------- */
+  --border-subtle: oklch(28% 0.01 265);
+  --border-strong: oklch(36% 0.012 265);
+
+  /* --- Text: drei Stufen reichen --------------------------------------- */
+  --text-primary: oklch(94% 0.004 265);
+  --text-secondary: oklch(72% 0.008 265);
+  --text-muted: oklch(58% 0.009 265);
+
+  /* --- Akzent ---------------------------------------------------------- */
+  --accent: oklch(62% 0.19 22);
+  --accent-hover: oklch(56% 0.19 22);
+  --accent-soft: oklch(62% 0.19 22 / 0.14);
+  --accent-line: oklch(62% 0.19 22 / 0.35);
+
+  /* --- Statusfarben ---------------------------------------------------- */
+  --ok: oklch(70% 0.16 150);
+  --ok-soft: oklch(70% 0.16 150 / 0.14);
+  --warn: oklch(76% 0.15 70);
+  --warn-soft: oklch(76% 0.15 70 / 0.14);
+  --info: oklch(70% 0.13 245);
+  --info-soft: oklch(70% 0.13 245 / 0.14);
+
+  /* --- Kategoriefarben, identisch zu core/constants.js ----------------- */
+  --cat-ads: oklch(62% 0.19 22);
+  --cat-analytics: oklch(68% 0.15 250);
+  --cat-social: oklch(66% 0.16 300);
+  --cat-annoyances: oklch(74% 0.14 60);
+  --cat-malware: oklch(72% 0.17 340);
+  --cat-oem: oklch(62% 0.02 265);
+  --cat-custom: oklch(72% 0.16 150);
+  --cat-presets: oklch(74% 0.11 220);
+  --cat-cosmetic: oklch(70% 0.09 200);
+
+  /* --- Typografie ------------------------------------------------------
+   * Systemschriften statt Webfonts: keine externen Anfragen, kein FOUT, und
+   * in einer Erweiterung ist die vertraute Systemschrift ohnehin die richtige
+   * Wahl. Die Zahlen laufen tabellarisch, damit Zähler nicht springen.
+   */
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI Variable Text', 'Segoe UI', Roboto, 'Helvetica Neue',
+    sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Segoe UI Mono', Menlo, monospace;
+
+  --text-xs: 0.6875rem; /* 11px */
+  --text-sm: 0.8125rem; /* 13px */
+  --text-base: 0.875rem; /* 14px */
+  --text-lg: 1rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.625rem;
+  --text-display: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+
+  /* --- Abstände: 4px-Raster ------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* --- Radien: abgestuft, nicht überall gleich ------------------------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  /* --- Schatten -------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.3);
+  --shadow-md: 0 4px 12px oklch(0% 0 0 / 0.35);
+  --shadow-lg: 0 16px 40px oklch(0% 0 0 / 0.45);
+
+  /* --- Bewegung -------------------------------------------------------- */
+  --duration-fast: 120ms;
+  --duration-normal: 220ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- Fokus: einheitlich und immer sichtbar --------------------------- */
+  --focus-ring: 2px solid oklch(72% 0.14 245);
+  --focus-offset: 2px;
+}
+
+/*
+ * Helles Thema.
+ *
+ * Kein umgedrehtes Dunkel: Flächen bekommen mehr Helligkeitsabstand, damit die
+ * Schichtung auch ohne Schatten lesbar bleibt.
+ */
+:root[data-theme='light'] {
+  --surface-base: oklch(99% 0.002 265);
+  --surface-raised: oklch(100% 0 0);
+  --surface-overlay: oklch(100% 0 0);
+  --surface-sunken: oklch(96% 0.003 265);
+
+  --border-subtle: oklch(91% 0.004 265);
+  --border-strong: oklch(84% 0.006 265);
+
+  --text-primary: oklch(22% 0.01 265);
+  --text-secondary: oklch(45% 0.012 265);
+  --text-muted: oklch(58% 0.012 265);
+
+  --accent: oklch(55% 0.2 22);
+  --accent-hover: oklch(48% 0.2 22);
+  --accent-soft: oklch(55% 0.2 22 / 0.1);
+  --accent-line: oklch(55% 0.2 22 / 0.3);
+
+  --ok: oklch(52% 0.15 150);
+  --warn: oklch(58% 0.15 60);
+  --info: oklch(52% 0.16 250);
+
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.06);
+  --shadow-md: 0 4px 12px oklch(0% 0 0 / 0.08);
+  --shadow-lg: 0 16px 40px oklch(0% 0 0 / 0.12);
+}
+
+/* Folgt der Systemeinstellung, solange der Nutzer nichts anderes gewählt hat. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']):not([data-theme='light']) {
+    --surface-base: oklch(99% 0.002 265);
+    --surface-raised: oklch(100% 0 0);
+    --surface-overlay: oklch(100% 0 0);
+    --surface-sunken: oklch(96% 0.003 265);
+    --border-subtle: oklch(91% 0.004 265);
+    --border-strong: oklch(84% 0.006 265);
+    --text-primary: oklch(22% 0.01 265);
+    --text-secondary: oklch(45% 0.012 265);
+    --text-muted: oklch(58% 0.012 265);
+    --accent: oklch(55% 0.2 22);
+    --accent-hover: oklch(48% 0.2 22);
+    --accent-soft: oklch(55% 0.2 22 / 0.1);
+    --accent-line: oklch(55% 0.2 22 / 0.3);
+    --ok: oklch(52% 0.15 150);
+    --warn: oklch(58% 0.15 60);
+    --info: oklch(52% 0.16 250);
+    --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.06);
+    --shadow-md: 0 4px 12px oklch(0% 0 0 / 0.08);
+    --shadow-lg: 0 16px 40px oklch(0% 0 0 / 0.12);
+  }
+}

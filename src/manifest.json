@@ -1,0 +1,94 @@
+{
+  "manifest_version": 3,
+  "name": "pBlock",
+  "short_name": "pBlock",
+  "version": "5.0.0",
+  "description": "Blockiert Werbung, Tracker und Schadsoftware. Open Source, ohne Datensammlung, mit Element-Picker und drei Schutzstufen.",
+  "default_locale": null,
+  "author": "Philipp Paulik",
+  "homepage_url": "https://philppplik.github.io/pBlock/",
+  "minimum_chrome_version": "111",
+
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestFeedback",
+    "alarms",
+    "contextMenus",
+    "notifications",
+    "activeTab"
+  ],
+
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+
+  "action": {
+    "default_popup": "ui/popup/index.html",
+    "default_title": "pBlock — Schutz für diese Seite",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "options_ui": {
+    "page": "ui/options/index.html",
+    "open_in_tab": true
+  },
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/main-world.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/cosmetic.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "ISOLATED"
+    },
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content/element-picker.js"],
+      "run_at": "document_idle",
+      "all_frames": false,
+      "world": "ISOLATED"
+    }
+  ],
+
+  "commands": {
+    "toggle-master": {
+      "suggested_key": { "default": "Alt+Shift+B" },
+      "description": "pBlock ein- oder ausschalten"
+    },
+    "toggle-site": {
+      "suggested_key": { "default": "Alt+Shift+P" },
+      "description": "pBlock auf dieser Seite pausieren oder fortsetzen"
+    },
+    "activate-picker": {
+      "suggested_key": { "default": "Alt+Shift+E" },
+      "description": "Element-Picker starten"
+    }
+  },
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'self'; form-action 'none'"
+  },
+
+  "offline_enabled": true
+}

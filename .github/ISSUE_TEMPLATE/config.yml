@@ -1,0 +1,16 @@
+# Leere Issues sind fast immer unbeantwortbar. Die Vorlagen fragen genau das ab,
+# was zur Bearbeitung nötig ist.
+blank_issues_enabled: false
+
+contact_links:
+  - name: Sicherheitslücke melden
+    url: https://github.com/philppplik/pBlock/security/advisories/new
+    about: Bitte NICHT über ein öffentliches Issue. Siehe SECURITY.md.
+
+  - name: Frage stellen oder Idee diskutieren
+    url: https://github.com/philppplik/pBlock/discussions
+    about: Für alles, was noch kein konkreter Fehler oder Vorschlag ist.
+
+  - name: Fehlender Filter / durchgerutschte Werbung
+    url: https://github.com/philppplik/pBlock/issues/new?template=01-seite-kaputt.yml
+    about: Bitte die Vorlage „Website funktioniert nicht richtig“ verwenden.

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="de" data-theme="">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pBlock</title>
+    <link rel="stylesheet" href="../shared/tokens.css" />
+    <link rel="stylesheet" href="../shared/base.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+
+  <body class="popup">
+    <!-- Kopf: Marke und Hauptschalter ------------------------------------ -->
+    <header class="popup__header">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__name">pBlock</span>
+      </div>
+
+      <label class="master">
+        <span class="master__label" id="master-label">Schutz aktiv</span>
+        <span class="switch">
+          <input type="checkbox" id="master-toggle" aria-describedby="master-label" />
+          <span class="switch__track"></span>
+        </span>
+      </label>
+    </header>
+
+    <main id="main">
+      <!-- Zähler ------------------------------------------------------- -->
+      <section class="counter" aria-labelledby="counter-heading">
+        <h2 class="visually-hidden" id="counter-heading">Blockierte Anfragen</h2>
+
+        <p class="counter__value" id="count-today" aria-live="polite">–</p>
+        <p class="counter__caption">heute blockiert</p>
+
+        <dl class="counter__secondary">
+          <div>
+            <dt>Diese Woche</dt>
+            <dd id="count-week">–</dd>
+          </div>
+          <div>
+            <dt>Insgesamt</dt>
+            <dd id="count-total">–</dd>
+          </div>
+          <div>
+            <dt>Gespart (ca.)</dt>
+            <dd id="count-bandwidth">–</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Aktuelle Seite ------------------------------------------------ -->
+      <section class="site" aria-labelledby="site-heading">
+        <h2 class="visually-hidden" id="site-heading">Aktuelle Seite</h2>
+
+        <div class="site__info">
+          <p class="site__host" id="site-host">–</p>
+          <p class="site__meta" id="site-meta">Keine Daten für diese Seite</p>
+        </div>
+
+        <label class="site__toggle">
+          <span class="visually-hidden" id="site-toggle-label"
+            >pBlock auf dieser Seite pausieren</span
+          >
+          <span class="switch">
+            <input type="checkbox" id="site-toggle" aria-describedby="site-toggle-label" />
+            <span class="switch__track"></span>
+          </span>
+        </label>
+      </section>
+
+      <!-- Einfacher Modus: Schutzstufe ---------------------------------- -->
+      <section class="level" id="level-section" aria-labelledby="level-heading">
+        <div class="level__head">
+          <h2 class="level__heading" id="level-heading">Schutzstufe</h2>
+          <span class="tag tag--accent" id="level-name">–</span>
+        </div>
+
+        <input
+          type="range"
+          id="level-slider"
+          class="level__slider"
+          min="0"
+          max="100"
+          step="25"
+          value="50"
+          aria-describedby="level-hint"
+        />
+
+        <div class="level__scale" aria-hidden="true">
+          <button type="button" class="level__stop" data-level="0">Aus</button>
+          <button type="button" class="level__stop" data-level="25">Minimal</button>
+          <button type="button" class="level__stop" data-level="50">Standard</button>
+          <button type="button" class="level__stop" data-level="75">Hoch</button>
+          <button type="button" class="level__stop" data-level="100">Max</button>
+        </div>
+
+        <p class="level__hint" id="level-hint">–</p>
+      </section>
+
+      <!-- Expertenmodus: Kategorien ------------------------------------- -->
+      <section
+        class="categories"
+        id="categories-section"
+        hidden
+        aria-labelledby="categories-heading"
+      >
+        <h2 class="level__heading" id="categories-heading">Filterkategorien</h2>
+        <ul class="categories__list" id="categories-list"></ul>
+      </section>
+
+      <!-- Aufteilung nach Kategorie ------------------------------------- -->
+      <section class="breakdown" id="breakdown-section" aria-labelledby="breakdown-heading">
+        <h2 class="visually-hidden" id="breakdown-heading">Verteilung der letzten sieben Tage</h2>
+        <ul class="breakdown__list" id="breakdown-list"></ul>
+      </section>
+
+      <div class="notice notice--error" id="error-box" hidden></div>
+    </main>
+
+    <!-- Fuß: Aktionen ---------------------------------------------------- -->
+    <footer class="popup__footer">
+      <button
+        type="button"
+        class="btn btn--ghost btn--sm"
+        id="action-picker"
+        title="Ein Element auf dieser Seite dauerhaft ausblenden"
+      >
+        Ausblenden
+      </button>
+      <button type="button" class="btn btn--ghost btn--sm" id="action-mode">Expertenmodus</button>
+      <button type="button" class="btn btn--ghost btn--sm" id="action-options">
+        Einstellungen
+      </button>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

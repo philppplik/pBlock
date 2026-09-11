@@ -1,0 +1,93 @@
+name: Release
+
+# Erstellt bei einem Versions-Tag ein Store-fertiges ZIP und hängt es an ein
+# GitHub-Release. Ausgelöst durch:
+#
+#   npm version minor && git push --follow-tags
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version für einen Testlauf (ohne führendes v)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Paket bauen und veröffentlichen
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Quellcode auschecken
+        uses: actions/checkout@v4
+        with:
+          # Vollständige Historie, damit der Changelog-Abschnitt ermittelt werden kann.
+          fetch-depth: 0
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Vollständige Prüfung
+        # Nichts wird veröffentlicht, das nicht durch Lint, Tests, Build und
+        # Manifest-Prüfung gekommen ist.
+        run: npm run verify
+
+      - name: Version gegen den Tag prüfen
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          paket="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$paket" ]; then
+            echo "Tag ($tag) und package.json ($paket) stimmen nicht überein."
+            echo "Bitte 'npm version' verwenden, damit beides zusammenpasst."
+            exit 1
+          fi
+          echo "Version $paket bestätigt."
+
+      - name: Archiv erstellen
+        run: npm run package
+
+      - name: Changelog-Abschnitt extrahieren
+        id: changelog
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          {
+            echo 'notes<<CHANGELOG_EOF'
+            # Alles zwischen der Überschrift dieser Version und der nächsten.
+            awk -v v="## [$version]" '
+              index($0, v) == 1 { grab = 1; next }
+              grab && /^## \[/ { exit }
+              grab { print }
+            ' CHANGELOG.md
+            echo 'CHANGELOG_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Release anlegen
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: pblock-*.zip
+          body: ${{ steps.changelog.outputs.notes }}
+          generate_release_notes: true
+          draft: false
+
+      - name: Archiv als Artefakt sichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: pblock-store-paket
+          path: pblock-*.zip
+          retention-days: 90

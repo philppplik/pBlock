@@ -1,0 +1,238 @@
+/*
+ * Einrichtungsassistent.
+ *
+ * Drei Schritte statt der vier aus v4 — der vierte war eine reine
+ * Zusammenfassung ohne Entscheidung. Jeder verbleibende Schritt stellt genau
+ * eine Frage oder vermittelt genau einen Gedanken.
+ */
+
+.onboarding {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--space-6);
+  /* Ein sehr zurückhaltender Verlauf, damit die Karte nicht im Nichts schwebt. */
+  background:
+    radial-gradient(60% 50% at 50% 0%, var(--accent-soft), transparent 70%), var(--surface-base);
+}
+
+.wizard {
+  width: 100%;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-8);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.wizard__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand__mark {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.wizard__step {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.wizard__title {
+  font-size: var(--text-2xl);
+  font-weight: 650;
+  line-height: var(--leading-tight);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-3);
+}
+
+.wizard__lead {
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+/* ==================== Schritte ==================== */
+
+.step[hidden] {
+  display: none;
+}
+
+/* ==================== Argumente ==================== */
+
+.facts {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.facts li {
+  position: relative;
+  padding-left: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.facts li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.facts strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ==================== Auswahl ==================== */
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.choice {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.choice:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-overlay);
+}
+
+.choice:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.choice:has(input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.choice input {
+  margin-top: 3px;
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.choice__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.choice__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: var(--text-base);
+}
+
+.choice__desc {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.choice--flat {
+  margin-top: var(--space-6);
+}
+
+/* ==================== Hinweiskarten ==================== */
+
+.tips {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+@media (min-width: 560px) {
+  .tips {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.tip-card {
+  padding: var(--space-4);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.tip-card h2 {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.tip-card p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-normal);
+}
+
+.tip-card__shortcut {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* ==================== Fuß ==================== */
+
+.wizard__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.wizard__spacer {
+  flex: 1;
+}

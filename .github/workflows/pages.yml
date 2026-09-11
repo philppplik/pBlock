@@ -1,0 +1,80 @@
+name: Projektseite veröffentlichen
+
+# Veröffentlicht den Inhalt von `website/` auf GitHub Pages.
+#
+# Einmalige Voraussetzung im Repository:
+#   Settings → Pages → Build and deployment → Source: "GitHub Actions"
+#
+# Die Seite ist danach unter https://philppplik.github.io/pBlock/ erreichbar.
+on:
+  push:
+    branches: [main]
+    # Nur laufen, wenn sich an der Seite tatsächlich etwas geändert hat.
+    paths:
+      - 'website/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Läuft immer nur eine Veröffentlichung. Ein laufender Durchlauf wird nicht
+# abgebrochen, damit eine begonnene Veröffentlichung nicht auf halbem Weg endet.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Seite vorbereiten
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Quellcode auschecken
+        uses: actions/checkout@v4
+
+      - name: Auf tote interne Verweise prüfen
+        # Ein kaputter Link innerhalb der eigenen Seite ist der häufigste Fehler
+        # nach einer Umbenennung. Die Prüfung kostet Sekunden.
+        run: |
+          set -euo pipefail
+          fehler=0
+          cd website
+          while IFS= read -r datei; do
+            # href="…" und src="…" einsammeln, externe und Anker überspringen.
+            grep -oE '(href|src)="[^"#:]+"' "$datei" \
+              | sed -E 's/.*="([^"]+)"/\1/' \
+              | while IFS= read -r ziel; do
+                  if [ ! -e "$ziel" ]; then
+                    echo "Toter Verweis in $datei: $ziel"
+                    fehler=1
+                  fi
+                done
+          done < <(find . -name '*.html')
+          exit $fehler
+
+      - name: Pages einrichten
+        uses: actions/configure-pages@v5
+
+      - name: Artefakt hochladen
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website
+
+  deploy:
+    name: Veröffentlichen
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Auf GitHub Pages veröffentlichen
+        id: deployment
+        uses: actions/deploy-pages@v4
