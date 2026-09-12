@@ -29,7 +29,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "validate:manifest": "node scripts/validate-manifest.mjs",
-    "package": "node scripts/package.mjs",
+    "package": "node scripts/package.mjs && node scripts/inspect-package.mjs",
+    "inspect:package": "node scripts/inspect-package.mjs",
     "verify": "npm run lint && npm run format:check && npm run test && npm run build && npm run validate:manifest"
   },
   "devDependencies": {
