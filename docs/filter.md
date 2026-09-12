@@ -136,12 +136,78 @@ dann bewusst und zählbar**, statt falsch zu übersetzen.
 Jede Verwerfung wird mit Grund gezählt und steht nach einer Aktualisierung im
 Protokoll.
 
-### Warum Einschränkungen entfallen dürfen
+### Welche Einschränkungen entfallen dürfen — und welche nicht
 
-Eine Option wie `$third-party` **verengt** eine Regel. Lässt man sie weg, greift
-die Regel breiter als vom Autor gedacht — aber niemals auf etwas, das er
-freigeben wollte. Eine Option wie `$csp` dagegen beschreibt eine völlig andere
-Aktion; sie wegzulassen wäre eine Fehlübersetzung.
+> **Korrektur gegenüber v5.0.0.** Hier stand, eine weggelassene Einschränkung
+> lasse die Regel „höchstens breiter greifen, aber niemals falsch“. Das war
+> falsch und hat einen Totalausfall verursacht. Die Einzelheiten stehen unten
+> unter „Der Ausfall in v5.0.0“.
+
+Drei Gruppen:
+
+**Dürfen entfallen.** `$third-party`, `$first-party`, `$important`,
+`$match-case`. Sie verengen die Regel auf einen Teil der Anfragen. Ohne sie
+greift sie etwas breiter — aber immer noch nur auf das, was das Muster selbst
+beschreibt.
+
+**Müssen umgesetzt werden.** `$domain=` grenzt eine Regel auf bestimmte Seiten
+ein. Die Eingrenzung ist bei vielen Regeln der _einzige_ Grund, warum das Muster
+überhaupt vertretbar ist. pBlock bildet sie auf `initiatorDomains` und
+`excludedInitiatorDomains` ab.
+
+**Führen zum Verwerfen.** `$csp`, `$removeparam`, `$redirect` beschreiben eine
+andere Aktion als „blockieren“. `$denyallow` und `$to` grenzen die Ziel-Domain
+ein; ohne sie würde die Regel breiter greifen als gewollt.
+
+### Der Ausfall in v5.0.0
+
+EasyList Germany enthält diese Zeile:
+
+```
+|https:$domain=adfarm1.adition.com
+```
+
+Gemeint ist: „Blockiere auf der Seite `adfarm1.adition.com` alles.“ Das
+`$domain=` ist der ganze Sinn der Regel.
+
+v5.0.0 ließ es weg. Übrig blieb `|https:` — `|` ist der Anfangsanker, `https:`
+das Präfix jeder HTTPS-Adresse. **Eine einzige Regel blockierte damit das
+gesamte Web.**
+
+Schlimmer noch: Sie blockierte auch die Downloads von pBlock selbst. Die
+Erweiterung konnte die Liste, die den Fehler enthielt, nicht mehr aktualisieren —
+und sich damit nicht mehr selbst reparieren. Im Diagnosebericht sah man es an
+den Zeitstempeln: Die Downloads scheiterten nach **vier Millisekunden**. So
+schnell scheitert kein Netzwerkzugriff; die Anfragen hatten den Browser nie
+verlassen.
+
+### Drei Verteidigungslinien
+
+Seit v5.1.0 muss ein Muster dieser Art drei Hürden nehmen, um Schaden anzurichten:
+
+1. **`$domain=` wird umgesetzt.** Die Regel oben wird korrekt auf
+   `adfarm1.adition.com` eingegrenzt — sie funktioniert jetzt sogar wie gedacht.
+2. **Muster ohne unterscheidungskräftigen Kern werden verworfen**, wenn sie
+   nicht auf Domains eingegrenzt sind. `isCatastrophicallyBroad()` entfernt
+   Anker, Platzhalter und ein führendes Schema; was übrig bleibt, muss mindestens
+   vier Zeichen lang sein. `|https:` bleibt dabei nichts übrig.
+3. **Kanarienvogel-Prüfung.** Vor dem Anwenden werden alle erzeugten Regeln
+   gegen eine Liste von Adressen geprüft, die erreichbar bleiben müssen: die
+   eigenen Bezugsquellen plus einige der meistbesuchten Seiten. Trifft eine
+   Regel eine davon, ist sie mit Sicherheit zu breit und wird verworfen.
+
+Dazu kommt eine vierte Absicherung außerhalb des Parsers: **Schutz-Allow-Regeln**
+mit der höchsten Priorität für alle Bezugsquellen. Selbst wenn alles andere
+versagt, bleibt eine Reparatur möglich. Siehe `docs/architektur.md`.
+
+### Warum Unit-Tests das nicht gefunden hätten
+
+Die auslösende Zeile stand in einer fremden Liste, die sich wöchentlich ändert.
+Kein Test gegen erfundene Eingaben hätte sie vorhergesehen.
+
+Deshalb gibt es `npm run audit:lists`: Das Skript lädt die echten Listen herunter,
+schickt sie durch den echten Parser und prüft das Ergebnis mit derselben
+Funktion, die auch zur Laufzeit greift. Es gehört vor jedes Release.
 
 ### Was v4 hier falsch machte
 

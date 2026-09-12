@@ -30,8 +30,18 @@ export const STORAGE_KEYS = Object.freeze({
  * Namensraum — Überschneidungen führen zu `updateDynamicRules`-Fehlern.
  */
 export const RULE_ID_RANGES = Object.freeze({
-  /** Allow-Regeln für die Whitelist. Höchste Priorität, damit sie Block-Regeln schlagen. */
-  ALLOW: { start: 1, end: 999 },
+  /**
+   * Schutz-Allow-Regeln für die Bezugsquellen der Filterlisten.
+   *
+   * Sie stehen ganz oben und sind immer vorhanden. In v5.0.0 erzeugte eine
+   * einzige fehlerhaft übersetzte Zeile aus EasyList Germany (`|https:`) eine
+   * Regel, die jede HTTPS-Anfrage blockierte — auch den Download der Liste, die
+   * sie wieder entfernt hätte. Aus diesem Zustand kam die Erweiterung nicht mehr
+   * heraus. Diese Regeln stellen sicher, dass eine Reparatur immer ankommt.
+   */
+  SELF_PROTECTION: { start: 1, end: 99 },
+  /** Allow-Regeln für die Whitelist. */
+  ALLOW: { start: 100, end: 999 },
   /** Vom Nutzer selbst angelegte Blockier-Regeln. */
   CUSTOM: { start: 1_000, end: 9_999 },
   /** Aus der mitgelieferten Registry erzeugte Kategorie-Regeln. */
@@ -53,6 +63,8 @@ export const MAX_DOMAINS_PER_RULE = 500;
  * Wir arbeiten bewusst mit deutlichem Abstand, damit die Rangfolge eindeutig bleibt.
  */
 export const RULE_PRIORITY = Object.freeze({
+  /** Schlägt alles, auch die Whitelist-Regeln. */
+  SELF_PROTECTION: 2_000,
   ALLOW: 1_000,
   CUSTOM: 100,
   STATIC: 10,

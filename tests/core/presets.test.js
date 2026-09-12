@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import {
   PRESETS,
+  PRESET_SOURCE_HOSTS,
   PRESET_MAX_AGE_MS,
   createEmptyPresetMeta,
   describePresets,
@@ -100,8 +101,34 @@ describe('isAllowedPresetUrl', () => {
 
   test('alle mitgelieferten Quellen sind zulässig', () => {
     for (const preset of Object.values(PRESETS)) {
-      expect(isAllowedPresetUrl(preset.url), preset.id).toBe(true);
+      for (const url of preset.urls) {
+        expect(isAllowedPresetUrl(url), `${preset.id}: ${url}`).toBe(true);
+      }
     }
+  });
+
+  // Eine einzige Quelle je Liste war in v5.0.0 ein Einzelfehlerpunkt: Fällt
+  // easylist.to aus, bekommt der Nutzer keine Aktualisierung mehr.
+  test('jede Liste nennt mindestens eine Quelle', () => {
+    for (const preset of Object.values(PRESETS)) {
+      expect(preset.urls.length, preset.id).toBeGreaterThan(0);
+    }
+  });
+
+  test('die Ersatzquellen liegen auf anderen Servern', () => {
+    // Ausnahme: Für Peter Lowe's List gibt es keinen unabhängigen Spiegel.
+    const mitEchtemSpiegel = Object.values(PRESETS).filter((preset) => {
+      const hosts = new Set(preset.urls.map((url) => new URL(url).hostname));
+      return hosts.size > 1;
+    });
+    expect(mitEchtemSpiegel.length).toBeGreaterThanOrEqual(4);
+  });
+
+  test('PRESET_SOURCE_HOSTS enthält jeden Quell-Host genau einmal', () => {
+    const alle = Object.values(PRESETS).flatMap((preset) =>
+      preset.urls.map((url) => new URL(url).hostname)
+    );
+    expect([...PRESET_SOURCE_HOSTS].sort()).toEqual([...new Set(alle)].sort());
   });
 });
 
@@ -111,6 +138,7 @@ describe('createEmptyPresetMeta', () => {
       enabled: false,
       ruleCount: 0,
       sourceEntries: 0,
+      sourceUrl: null,
       updatedAt: null,
       lastError: null,
     });

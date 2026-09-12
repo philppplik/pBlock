@@ -8,17 +8,32 @@
  * Nichts davon wird ausgeführt. Die Quell-URLs sind fest im Paket hinterlegt und
  * werden zusätzlich gegen {@link isAllowedPresetUrl} geprüft.
  *
- * ## Robustheit
+ * ## Was v5.1.0 hier geändert hat
  *
- * v4 hatte hier keinerlei Zeitbegrenzung und keine Größenbeschränkung. Ein
- * hängender Server hielt den Aufruf offen, bis Chrome den Service Worker beendete —
- * die Liste blieb dann dauerhaft im Zustand „wird geladen“. Jetzt gilt ein
- * Zeitlimit, eine Größengrenze, und jeder Fehlschlag wird an der Liste vermerkt,
- * sodass die Oberfläche ihn anzeigen kann.
+ * In v5.0.0 schlugen bei einem Nutzer alle fünf Listen mit „Failed to fetch“
+ * fehl — innerhalb von vier Millisekunden. So schnell scheitert kein
+ * Netzwerkzugriff. Die Ursache lag nicht im Netz, sondern in einer aus EasyList
+ * Germany erzeugten Regel, die jede HTTPS-Anfrage blockierte (Einzelheiten in
+ * `filter-parser.js`). Drei Konsequenzen:
+ *
+ * 1. **Mehrere Quellen je Liste**, der Reihe nach versucht. Idee von uBlock
+ *    Origin übernommen, siehe `presets.js`.
+ * 2. **Wiederholversuche** mit wachsendem Abstand bei vorübergehenden Fehlern.
+ * 3. **Kanarienvogel-Prüfung**: Regeln, die eine Adresse treffen würden, die
+ *    erreichbar bleiben muss, werden verworfen — nicht angewendet.
  */
 
-import { PRESETS, isAllowedPresetUrl, normalizePresetMeta } from '../core/presets.js';
-import { buildRulesFromParsedList, parseFilterList } from '../core/filter-parser.js';
+import {
+  PRESETS,
+  PRESET_SOURCE_URLS,
+  isAllowedPresetUrl,
+  normalizePresetMeta,
+} from '../core/presets.js';
+import {
+  buildRulesFromParsedList,
+  findSelfBlockingRules,
+  parseFilterList,
+} from '../core/filter-parser.js';
 import { describeError } from '../core/logger.js';
 import { readPresetMeta, removePresetRules, writePresetMeta, writePresetRules } from './storage.js';
 
@@ -31,16 +46,51 @@ const UPDATE_PERIOD_MINUTES = 6 * 60;
 /** Abbruch, wenn der Server nicht antwortet. */
 const FETCH_TIMEOUT_MS = 30_000;
 
-/** Obergrenze für eine heruntergeladene Liste. EasyList liegt bei etwa 3 MB. */
+/** Obergrenze für eine heruntergeladene Liste. EasyList liegt bei etwa 2 MB. */
 const MAX_LIST_BYTES = 12 * 1024 * 1024;
 
+/** Versuche je Quelle, bevor zur nächsten gewechselt wird. */
+const ATTEMPTS_PER_SOURCE = 2;
+
 /**
- * Lädt eine Filterliste herunter.
+ * Adressen, die unter keinen Umständen blockiert werden dürfen.
+ *
+ * Neben den eigenen Bezugsquellen stehen hier einige der meistbesuchten
+ * Adressen des Webs. Trifft eine erzeugte Regel eine davon, ist sie mit
+ * Sicherheit zu breit geraten — kein Listenbetreuer würde google.com oder
+ * wikipedia.org vollständig blockieren.
+ *
+ * @type {readonly string[]}
+ */
+const CANARY_URLS = Object.freeze([
+  ...PRESET_SOURCE_URLS,
+  'https://www.google.com/',
+  'https://chromewebstore.google.com/',
+  'https://github.com/',
+  'https://www.wikipedia.org/',
+  'https://example.com/',
+  'https://www.bild.de/',
+  'https://www.spiegel.de/',
+]);
+
+/**
+ * Wartet eine Weile.
+ * @param {number} ms
+ * @returns {Promise<void>}
+ */
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+/**
+ * Lädt eine Filterliste von einer einzelnen Adresse.
  * @param {string} url
  * @returns {Promise<string>}
  * @throws {Error} Bei Zeitüberschreitung, HTTP-Fehler oder Überschreitung der Größengrenze.
  */
-async function fetchListText(url) {
+async function fetchOnce(url) {
   if (!isAllowedPresetUrl(url)) {
     throw new Error('Die Quelle ist keine zulässige HTTPS-Adresse.');
   }
@@ -57,9 +107,7 @@ async function fetchListText(url) {
       redirect: 'follow',
     });
 
-    if (!response.ok) {
-      throw new Error(`Server antwortete mit HTTP ${response.status}.`);
-    }
+    if (!response.ok) throw new Error(`Server antwortete mit HTTP ${response.status}.`);
 
     const declaredLength = Number(response.headers.get('content-length'));
     if (Number.isFinite(declaredLength) && declaredLength > MAX_LIST_BYTES) {
@@ -67,9 +115,10 @@ async function fetchListText(url) {
     }
 
     const text = await response.text();
-    if (text.length > MAX_LIST_BYTES) {
-      throw new Error('Die Liste ist größer als erlaubt.');
-    }
+    if (text.length > MAX_LIST_BYTES) throw new Error('Die Liste ist größer als erlaubt.');
+    // Eine leere oder winzige Antwort ist fast immer eine Fehlerseite.
+    if (text.length < 100) throw new Error('Die Antwort ist zu kurz für eine Filterliste.');
+
     return text;
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
@@ -82,12 +131,78 @@ async function fetchListText(url) {
 }
 
 /**
+ * Versucht alle Quellen einer Liste der Reihe nach.
+ *
+ * @param {import('../core/presets.js').PresetDefinition} preset
+ * @param {ReturnType<typeof import('../core/logger.js').createLogger>['child']} log
+ * @returns {Promise<{text: string, url: string}>}
+ * @throws {Error} Wenn keine Quelle erreichbar war.
+ */
+async function fetchFromAnySource(preset, log) {
+  /** @type {string[]} */
+  const failures = [];
+
+  for (const url of preset.urls) {
+    for (let attempt = 1; attempt <= ATTEMPTS_PER_SOURCE; attempt += 1) {
+      try {
+        const text = await fetchOnce(url);
+        if (failures.length > 0) {
+          log.info(`${preset.name}: über Ersatzquelle geladen (${new URL(url).hostname})`);
+        }
+        return { text, url };
+      } catch (error) {
+        const message = describeError(error);
+        failures.push(`${new URL(url).hostname}: ${message}`);
+
+        // Ein HTTP-Fehler wiederholt sich; ein Netzwerkfehler womöglich nicht.
+        const worthRetrying = !message.includes('HTTP') && attempt < ATTEMPTS_PER_SOURCE;
+        if (worthRetrying) {
+          log.debug(`${preset.name}: Versuch ${attempt} fehlgeschlagen, neuer Versuch …`);
+          await delay(1_000 * attempt);
+        } else {
+          break;
+        }
+      }
+    }
+  }
+
+  throw new Error(`Keine Quelle erreichbar. ${failures.join(' · ')}`);
+}
+
+/**
+ * Entfernt Regeln, die eine unverzichtbare Adresse blockieren würden.
+ *
+ * @param {Array<object>} rules
+ * @param {ReturnType<typeof import('../core/logger.js').createLogger>['child']} log
+ * @param {string} presetName
+ * @returns {{rules: Array<object>, removed: number}}
+ */
+function dropSelfBlockingRules(rules, log, presetName) {
+  const offenders = findSelfBlockingRules(rules, CANARY_URLS);
+  if (offenders.length === 0) return { rules, removed: 0 };
+
+  const blockedIndexes = new Set(offenders.map((entry) => entry.index));
+
+  // Laut protokollieren: Wenn das hier anschlägt, ist entweder die Liste kaputt
+  // oder unser Parser hat einen Fehler. Beides muss sichtbar sein.
+  log.error(
+    `${presetName}: ${blockedIndexes.size} Regel(n) verworfen, die unverzichtbare Adressen blockiert hätten`,
+    offenders.slice(0, 5).map((entry) => ({ url: entry.url, condition: entry.condition }))
+  );
+
+  return {
+    rules: rules.filter((_rule, index) => !blockedIndexes.has(index)),
+    removed: blockedIndexes.size,
+  };
+}
+
+/**
  * Lädt eine Liste, übersetzt sie und speichert das Ergebnis.
  *
  * @param {string} presetId
  * @param {object} deps
  * @param {ReturnType<typeof import('../core/logger.js').createLogger>} deps.logger
- * @returns {Promise<{ok: boolean, ruleCount: number, sourceEntries: number, error: string|null, skippedReasons: Record<string, number>}>}
+ * @returns {Promise<{ok: boolean, ruleCount: number, sourceEntries: number, error: string|null, skippedReasons: Record<string, number>, droppedUnsafe: number}>}
  */
 export async function updatePreset(presetId, { logger }) {
   const definition = PRESETS[presetId];
@@ -100,14 +215,17 @@ export async function updatePreset(presetId, { logger }) {
       sourceEntries: 0,
       error: 'Unbekannte Liste.',
       skippedReasons: {},
+      droppedUnsafe: 0,
     };
   }
 
   try {
     log.info(`Lade ${definition.name} …`);
-    const text = await fetchListText(definition.url);
+    const { text, url } = await fetchFromAnySource(definition, log);
+
     const parsed = parseFilterList(text);
-    const rules = buildRulesFromParsedList(parsed);
+    const built = buildRulesFromParsedList(parsed);
+    const { rules, removed } = dropSelfBlockingRules(built, log, definition.name);
 
     await writePresetRules(presetId, rules);
 
@@ -118,6 +236,7 @@ export async function updatePreset(presetId, { logger }) {
       sourceEntries: parsed.stats.accepted,
       updatedAt: Date.now(),
       lastError: null,
+      sourceUrl: url,
     };
     await writePresetMeta(meta);
 
@@ -132,13 +251,12 @@ export async function updatePreset(presetId, { logger }) {
       sourceEntries: parsed.stats.accepted,
       error: null,
       skippedReasons: parsed.stats.reasons,
+      droppedUnsafe: removed,
     };
   } catch (error) {
     const message = describeError(error);
     log.error(`${definition.name} konnte nicht aktualisiert werden: ${message}`);
 
-    // Fehler an der Liste vermerken, damit die Oberfläche ihn zeigen kann statt
-    // stumm eine veraltete Regelzahl anzuzeigen.
     try {
       const meta = await readPresetMeta();
       meta[presetId] = { ...meta[presetId], lastError: message };
@@ -147,16 +265,19 @@ export async function updatePreset(presetId, { logger }) {
       // Wenn schon das Vermerken scheitert, bringt weiteres Nachfassen nichts.
     }
 
-    return { ok: false, ruleCount: 0, sourceEntries: 0, error: message, skippedReasons: {} };
+    return {
+      ok: false,
+      ruleCount: 0,
+      sourceEntries: 0,
+      error: message,
+      skippedReasons: {},
+      droppedUnsafe: 0,
+    };
   }
 }
 
 /**
  * Schaltet eine Liste ein oder aus.
- *
- * Beim Einschalten wird sofort heruntergeladen, falls noch keine Daten vorliegen.
- * Beim Ausschalten werden die gespeicherten Regeln gelöscht — sie belegen sonst
- * dauerhaft mehrere Megabyte im Storage, ohne irgendeine Wirkung zu haben.
  *
  * @param {string} presetId
  * @param {boolean} enabled
@@ -174,7 +295,7 @@ export async function togglePreset(presetId, enabled, { logger }) {
   if (!enabled) {
     await removePresetRules(presetId);
     const cleared = await readPresetMeta();
-    cleared[presetId] = { ...cleared[presetId], ruleCount: 0, updatedAt: null };
+    cleared[presetId] = { ...cleared[presetId], ruleCount: 0, updatedAt: null, lastError: null };
     await writePresetMeta(cleared);
     return { ok: true, error: null };
   }
@@ -215,7 +336,6 @@ export async function updateStalePresets({ logger, force = false }) {
   const failed = [];
 
   for (const id of ids) {
-    // Bewusst sequenziell — Begründung siehe Funktionskommentar.
     const result = await updatePreset(id, { logger });
     if (result.ok) updated.push(id);
     else failed.push(id);
