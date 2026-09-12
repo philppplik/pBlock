@@ -26,6 +26,55 @@ import {
   updateBadge,
 } from './stats-collector.js';
 import { UPDATE_ALARM_NAME, ensureUpdateAlarm, updateStalePresets } from './preset-manager.js';
+import { PRESETS } from '../core/presets.js';
+import { removePresetRules } from './storage.js';
+
+/**
+ * Schema-Version der gespeicherten Listen-Regeln.
+ *
+ * Erhöhen, wenn eine Parser-Änderung dazu führt, dass bereits gespeicherte
+ * Regeln neu erzeugt werden müssen. Die Regeln werden dann beim nächsten Start
+ * verworfen und frisch geholt.
+ */
+const PRESET_RULES_SCHEMA = 2;
+
+/**
+ * Verwirft gespeicherte Listen-Regeln, wenn sie von einem älteren Parser stammen.
+ *
+ * Der Anlass ist konkret: v5.0.0 übersetzte die Zeile
+ * `|https:$domain=adfarm1.adition.com` aus EasyList Germany in eine Regel, die
+ * jede HTTPS-Anfrage blockierte. Sie lag danach im Speicher und wurde bei jedem
+ * Start erneut angewendet — auch nach einem Update der Erweiterung, denn die
+ * Regeln werden ja nicht neu geparst, sondern aus dem Speicher geladen.
+ *
+ * Ohne diesen Schritt hätte selbst die korrigierte Fassung den Fehler weiter
+ * mitgeschleppt. Ein erneuter Download kostet ein paar Megabyte; das ist der
+ * Preis dafür, dass niemand von Hand aufräumen muss.
+ *
+ * @param {ReturnType<typeof import('../core/logger.js').createLogger>} logger
+ * @returns {Promise<boolean>} Ob etwas verworfen wurde.
+ */
+export async function discardOutdatedPresetRules(logger) {
+  const stored = await chrome.storage.local.get('presetRulesSchema');
+  if (stored.presetRulesSchema === PRESET_RULES_SCHEMA) return false;
+
+  const log = logger.child('Migration');
+  log.info('Gespeicherte Listen-Regeln stammen von einem älteren Parser — werden neu geholt');
+
+  for (const id of Object.keys(PRESETS)) {
+    await removePresetRules(id);
+  }
+
+  // Zeitstempel zurücksetzen, damit `updateStalePresets` sie als veraltet ansieht.
+  const meta = await store.readPresetMeta();
+  for (const id of Object.keys(meta)) {
+    meta[id] = { ...meta[id], updatedAt: null, ruleCount: 0, lastError: null };
+  }
+  await store.writePresetMeta(meta);
+
+  await chrome.storage.local.set({ presetRulesSchema: PRESET_RULES_SCHEMA });
+  return true;
+}
 
 /** IDs der Kontextmenü-Einträge. */
 const MENU = Object.freeze({
@@ -236,10 +285,22 @@ export function registerLifecycle({ logger, handlers }) {
       });
 
       await migrateIfNeeded(logger);
+
+      // Muss vor `applyRulesNow` laufen: Sonst werden die alten, womöglich
+      // fehlerhaften Regeln noch einmal angewendet.
+      const discarded = await discardOutdatedPresetRules(logger);
+
       createContextMenus(logger);
       ensurePollAlarm();
       ensureUpdateAlarm();
       await applyRulesNow({ logger });
+
+      if (discarded) {
+        // Sofort neu holen statt auf den Sechs-Stunden-Takt zu warten — bis
+        // dahin wäre der Nutzer ohne Listenschutz.
+        const result = await updateStalePresets({ logger });
+        if (result.updated.length > 0) await applyRulesNow({ logger });
+      }
 
       if (details.reason === 'install') {
         const onboarding = await store.readOnboarding();

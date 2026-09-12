@@ -11,6 +11,84 @@ die Versionierung [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [5.1.0] – 2026-09-12
+
+Dringender Patch. In v5.0.0 konnte eine einzige Zeile aus einer Filterliste dazu
+führen, dass **jede HTTPS-Anfrage blockiert** wurde — und die Erweiterung sich
+nicht mehr selbst reparieren konnte.
+
+### Behoben
+
+- **`$domain=` wurde weggelassen statt umgesetzt.** EasyList Germany enthält die
+  Zeile `|https:$domain=adfarm1.adition.com` — „blockiere auf dieser einen Seite
+  alles“. Ohne das `$domain=` blieb `|https:` übrig: der Anfangsanker plus das
+  Präfix jeder HTTPS-Adresse. Eine Regel, die das gesamte Web blockierte.
+
+  Der Fehler war selbstverstärkend: Die Regel blockierte auch die Downloads von
+  pBlock, sodass die Liste, die sie entfernt hätte, nie ankam. Im
+  Diagnosebericht scheiterten alle fünf Listen nach **vier Millisekunden** — die
+  Anfragen hatten den Browser nie verlassen.
+
+  `$domain=` wird jetzt auf `initiatorDomains` und `excludedInitiatorDomains`
+  abgebildet. Die Regel funktioniert damit sogar wie vom Listenautor gedacht.
+
+- **Die ASCII-Prüfung verwarf sämtliche Muster.** Beim Beheben einer
+  Lint-Warnung in v5.0.0 gingen die Escapes in `/[^\x00-\x7F]/` verloren. Übrig
+  blieb `[^ -]` — „alles außer Leerzeichen und Bindestrich“, was auf jedes
+  Muster zutrifft. Aus EasyPrivacy wurden dadurch statt 8.275 Mustern null.
+
+- **`$all` wurde als unbekannt verworfen.** URLhaus nutzt die Option auf 7.587
+  Zeilen; wir verloren gut 80 % der Malware-Liste. Jetzt vollständig übernommen
+  (9.347 statt 1.760 Einträge), mit eigenem Regel-Topf, damit daraus keine 7.587
+  Einzelregeln werden.
+
+- Weitere Options ergänzt: `xhr`, `css`, `frame`, `doc`, `beacon`, `strict3p`,
+  `strict1p`. `$denyallow` und `$to` führen jetzt zum Verwerfen, statt
+  stillschweigend die Regel zu verbreitern.
+
+### Neu — vier Verteidigungslinien gegen Wiederholung
+
+1. **Muster ohne unterscheidungskräftigen Kern** werden verworfen, sofern sie
+   nicht auf Domains eingegrenzt sind (`isCatastrophicallyBroad`).
+2. **Kanarienvogel-Prüfung**: Erzeugte Regeln werden vor dem Anwenden gegen
+   Adressen geprüft, die erreichbar bleiben müssen — die eigenen Bezugsquellen
+   plus google.com, github.com, wikipedia.org und andere. Treffer werden
+   verworfen und protokolliert.
+3. **Schutz-Allow-Regeln** mit der höchsten Priorität für alle Bezugsquellen.
+   Selbst wenn alles andere versagt, bleibt eine Reparatur möglich.
+4. **`npm run audit:lists`** lädt die echten Listen herunter und prüft sie mit
+   der echten Laufzeitfunktion. Unit-Tests gegen erfundene Eingaben hätten diesen
+   Fehler nie gefunden — die auslösende Zeile stand in einer fremden Liste.
+
+### Neu — Ausfallsicherheit (Idee von uBlock Origin)
+
+- **Mehrere Quellen je Filterliste**, der Reihe nach versucht. Ist `easylist.to`
+  nicht erreichbar, wird über die CDN-Spiegel von uBlock Origin oder über Adblock
+  Plus geladen. uBlock Origin führt in seiner `assets.json` seit Jahren mehrere
+  `contentURL`-Einträge je Liste; die Idee ist von dort übernommen, kein Code.
+- **Wiederholversuche** mit wachsendem Abstand bei Netzwerkfehlern.
+- Antworten unter 100 Bytes gelten als Fehlerseite, nicht als Filterliste.
+- Die Oberfläche zeigt, über welche Quelle eine Liste zuletzt geladen wurde.
+
+### Geändert
+
+- Beim Update werden gespeicherte Listen-Regeln verworfen und neu geholt. Ohne
+  diesen Schritt hätte auch die korrigierte Fassung die fehlerhaften Regeln aus
+  v5.0.0 weiter angewendet — sie liegen im Speicher und werden nicht neu geparst.
+- Das Store-Paket enthält `images/` nicht mehr (515 KB → 76 KB) und nutzt
+  spezifikationskonforme Pfadtrenner.
+
+### Wirkung auf die Filterabdeckung
+
+| Liste | v5.0.0 | v5.1.0 |
+| --- | --- | --- |
+| EasyList | 65.006 Einträge | 65.006 |
+| EasyPrivacy | 46.867, **0 Muster** | 55.143, 8.275 Muster |
+| EasyList Germany | 716 | 2.471 |
+| Peter Lowe | 3.558 | 3.572 |
+| URLhaus | 1.760 | **9.347** |
+
+
 ## [5.0.0] – 2026-09-11
 
 Vollständige Überarbeitung. Die gesamte Logik wurde aus der Browser-Anbindung
@@ -135,6 +213,7 @@ machten.
 Erste Fassung unter dem Namen „Friendly Bird“ mit Element-Picker, Scriptlets und
 überarbeiteter Oberfläche. Siehe Git-Historie.
 
-[Unveröffentlicht]: https://github.com/philppplik/pBlock/compare/v5.0.0...HEAD
+[Unveröffentlicht]: https://github.com/philppplik/pBlock/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/philppplik/pBlock/releases/tag/v5.1.0
 [5.0.0]: https://github.com/philppplik/pBlock/releases/tag/v5.0.0
 [4.0.0]: https://github.com/philppplik/pBlock/releases/tag/v4.0.0

@@ -34,6 +34,51 @@ import {
   RULE_PRIORITY,
 } from './constants.js';
 import { RULE_REGISTRY, collapseRedundantDomains } from './rule-registry.js';
+import { PRESET_SOURCE_HOSTS } from './presets.js';
+
+/**
+ * Baut die Schutz-Allow-Regeln für die Bezugsquellen der Filterlisten.
+ *
+ * Diese Regeln sind immer Teil des Regelsatzes, unabhängig von jeder
+ * Einstellung, und tragen die höchste Priorität.
+ *
+ * Der Grund ist eine konkrete Erfahrung aus v5.0.0: Aus der Zeile
+ * `|https:$domain=adfarm1.adition.com` in EasyList Germany wurde eine Regel, die
+ * jede HTTPS-Anfrage blockierte — einschließlich des Downloads eben jener Liste.
+ * Die Erweiterung konnte sich nicht mehr selbst reparieren, weil die Reparatur
+ * genau durch den Fehler verhindert wurde, den sie beheben sollte.
+ *
+ * Die Kosten sind gering: eine Handvoll Regeln für eine Handvoll Hosts, die
+ * ohnehin niemand blockieren möchte. Der Nutzen ist, dass ein Fehler dieser Art
+ * behebbar bleibt.
+ *
+ * @returns {chrome.declarativeNetRequest.Rule[]}
+ */
+export function buildSelfProtectionRules() {
+  const hosts = collapseRedundantDomains([...PRESET_SOURCE_HOSTS]);
+  if (hosts.length === 0) return [];
+
+  /** @type {chrome.declarativeNetRequest.Rule[]} */
+  const rules = [];
+  let nextId = RULE_ID_RANGES.SELF_PROTECTION.start;
+
+  for (const block of chunk(hosts, MAX_DOMAINS_PER_RULE)) {
+    if (nextId > RULE_ID_RANGES.SELF_PROTECTION.end) break;
+    rules.push({
+      id: nextId++,
+      priority: RULE_PRIORITY.SELF_PROTECTION,
+      action: { type: 'allow' },
+      condition: {
+        requestDomains: block,
+        // Bewusst alle Typen einschließlich `main_frame`: Der Nutzer soll die
+        // Listen auch im Browser aufrufen können, um sie selbst zu prüfen.
+        resourceTypes: [...new Set(['main_frame', ...BLOCKABLE_RESOURCE_TYPES])],
+      },
+    });
+  }
+
+  return rules;
+}
 
 /**
  * Teilt ein Array in Blöcke fester Größe.
@@ -240,22 +285,24 @@ export function buildDynamicRuleSet({
   if (!settings.masterEnabled) {
     return {
       rules: [],
-      counts: { allow: 0, custom: 0, category: 0, preset: 0, total: 0 },
+      counts: { selfProtection: 0, allow: 0, custom: 0, category: 0, preset: 0, total: 0 },
       truncatedPresetRules: presetRules.length,
     };
   }
 
+  const selfProtection = buildSelfProtectionRules();
   const allow = buildAllowRules(settings.whitelist);
   const custom = buildCustomRules(settings);
   const category = buildCategoryRules(settings);
 
-  const reserved = allow.length + custom.length + category.length;
+  const reserved = selfProtection.length + allow.length + custom.length + category.length;
   const budget = Math.max(0, maxRules - reserved);
   const preset = assignPresetRuleIds(presetRules, budget);
 
   return {
-    rules: [...allow, ...custom, ...category, ...preset],
+    rules: [...selfProtection, ...allow, ...custom, ...category, ...preset],
     counts: {
+      selfProtection: selfProtection.length,
       allow: allow.length,
       custom: custom.length,
       category: category.length,

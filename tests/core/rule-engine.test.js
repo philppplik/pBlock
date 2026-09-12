@@ -232,7 +232,9 @@ describe('buildDynamicRuleSet', () => {
 
     const ergebnis = buildDynamicRuleSet({ settings, presetRules, maxRules: 25 });
     expect(ergebnis.counts.total).toBe(25);
-    expect(ergebnis.counts.preset).toBe(25 - ergebnis.counts.category - ergebnis.counts.custom);
+    expect(ergebnis.counts.preset).toBe(
+      25 - ergebnis.counts.selfProtection - ergebnis.counts.category - ergebnis.counts.custom
+    );
     expect(ergebnis.truncatedPresetRules).toBe(1000 - ergebnis.counts.preset);
   });
 });
