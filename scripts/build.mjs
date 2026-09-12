@@ -47,11 +47,17 @@ const ENTRY_POINTS = [
   { in: 'ui/onboarding/onboarding.js', out: 'ui/onboarding/onboarding', format: 'iife' },
 ];
 
-/** Statische Dateien und Verzeichnisse, die unverändert übernommen werden. */
+/**
+ * Statische Dateien und Verzeichnisse, die unverändert übernommen werden.
+ *
+ * `images/` fehlt hier bewusst: Das Verzeichnis enthält Logos in mehreren
+ * Varianten und fünf Store-Screenshots, zusammen rund 400 KB. Weder das Manifest
+ * noch eine Oberflächenseite verweist darauf — es sind Material für README und
+ * Store-Eintrag, nicht für die Erweiterung. In v4 wurde alles mit ausgeliefert.
+ */
 const STATIC_COPIES = [
   { from: 'manifest.json', to: 'manifest.json' },
   { from: '../icons', to: 'icons' },
-  { from: '../images', to: 'images' },
   { from: 'ui/popup/index.html', to: 'ui/popup/index.html' },
   { from: 'ui/popup/popup.css', to: 'ui/popup/popup.css' },
   { from: 'ui/options/index.html', to: 'ui/options/index.html' },
