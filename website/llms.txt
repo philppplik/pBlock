@@ -1,0 +1,20 @@
+# pBlock
+
+> Ein quelloffener Werbeblocker für Chrome. Stoppt Werbung, Tracker und bekannte Schadsoftware-Domains. Ohne Datensammlung. Mit Kontrolle, die bei dir bleibt.
+
+- [Project](https://pblock.philipp-paulik.de/)
+- [Source](https://github.com/philppplik/pBlock)
+- [Documentation](https://github.com/philppplik/pBlock/blob/main/docs/architektur.md)
+- [Privacy](https://pblock.philipp-paulik.de/datenschutz)
+
+Was ist pBlock?
+pBlock ist eine MIT-lizenzierte Chrome-Erweiterung, die Werbung, Tracker und bekannte Schadsoftware-Domains blockiert.
+
+Wie installiere ich pBlock?
+Im Chrome Web Store oder aus dem Quellcode: Node.js 20+, npm install, npm run build. Dann dist/ als entpackte Erweiterung laden. Die Store-Version kann hinter GitHub liegen.
+
+Wird mein Surfverhalten übertragen?
+pBlock hat keinen eigenen Server und keine Telemetrie. Optionale Filterlisten werden von ihren Anbietern geladen. Lokale Statistik kann in den Einstellungen gelöscht werden.
+
+Kann eine Website dadurch kaputtgehen?
+Ja. Strengere Kategorien können Funktionen einer Seite blockieren. Nimm die Seite aus oder reduziere die Schutzstufe.
