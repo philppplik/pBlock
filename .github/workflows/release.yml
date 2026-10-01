@@ -78,7 +78,7 @@ jobs:
 
       - name: Release anlegen
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: pblock-*.zip
           body: ${{ steps.changelog.outputs.notes }}
