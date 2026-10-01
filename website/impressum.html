@@ -303,6 +303,71 @@
         }
       }
     </style>
+    <style id="product-design-system">
+      body {
+        background: oklch(17% 0.008 265);
+        color: oklch(94% 0.004 265);
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+      }
+      h1,
+      h2 {
+        font-family: inherit;
+        font-weight: 650;
+        letter-spacing: -0.04em;
+      }
+      h1 {
+        font-size: clamp(48px, 6vw, 78px);
+      }
+      em {
+        font-style: normal;
+        color: oklch(62% 0.19 22);
+      }
+      :root {
+        --accent: oklch(62% 0.19 22);
+      }
+      .hero:after {
+        display: none;
+      }
+      .nav {
+        border-color: oklch(28% 0.01 265);
+      }
+      .button {
+        border-radius: 10px;
+      }
+      .primary {
+        color: white;
+      }
+      .visual,
+      .grid article {
+        background: oklch(21% 0.009 265);
+        border: 1px solid oklch(28% 0.01 265);
+        border-radius: 14px;
+      }
+      .grid article {
+        padding: 28px;
+      }
+      .grid {
+        gap: 18px;
+      }
+      .terminal {
+        font-size: 16px;
+      }
+      .section h2 {
+        font-size: clamp(32px, 4vw, 48px);
+      }
+      .lead {
+        max-width: 720px;
+      }
+      .brand img {
+        width: 34px;
+        vertical-align: middle;
+        margin-right: 12px;
+      }
+    </style>
   </head>
   <body>
     <a class="skip" href="#main">Zum Inhalt</a>
