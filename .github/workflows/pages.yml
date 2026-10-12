@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Quellcode auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Auf tote interne Verweise prüfen
         # Ein kaputter Link innerhalb der eigenen Seite ist der häufigste Fehler
