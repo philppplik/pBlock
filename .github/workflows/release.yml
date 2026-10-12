@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Quellcode auschecken
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           # Vollständige Historie, damit der Changelog-Abschnitt ermittelt werden kann.
           fetch-depth: 0
