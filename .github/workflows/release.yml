@@ -86,7 +86,7 @@ jobs:
           draft: false
 
       - name: Archiv als Artefakt sichern
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: pblock-store-paket
           path: pblock-*.zip
